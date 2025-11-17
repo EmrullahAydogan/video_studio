@@ -18,9 +18,10 @@ import {
 import { Button } from '@/components/ui/button';
 
 export function ScenePropertiesPanel() {
-  const { timeline, project, updateScene, deleteScene, duplicateScene } =
+  const { timeline, project, updateScene, deleteScene, duplicateScene, splitScene } =
     useProjectStore();
   const [isOpen, setIsOpen] = useState(true);
+  const [splitTime, setSplitTime] = useState('');
 
   const selectedScene = project?.scenes.find(
     (s) => s.id === timeline.selectedSceneId
@@ -89,6 +90,92 @@ export function ScenePropertiesPanel() {
               }
               className="w-full px-3 py-2 text-sm border rounded-md bg-background"
             />
+          </div>
+
+          {/* Trim Controls */}
+          <div>
+            <label className="text-xs font-medium text-muted-foreground mb-2 block flex items-center gap-2">
+              <Scissors className="w-3 h-3" />
+              TRIM
+            </label>
+
+            {/* Trim Start */}
+            <div className="space-y-3">
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span>Trim Start</span>
+                  <span className="text-muted-foreground">
+                    {(selectedScene.trimStart || 0).toFixed(2)}s
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max={selectedScene.duration}
+                  step="0.01"
+                  value={selectedScene.trimStart || 0}
+                  onChange={(e) => {
+                    const trimStart = parseFloat(e.target.value);
+                    const trimEnd = selectedScene.trimEnd || 0;
+                    const originalDuration = selectedScene.originalDuration || selectedScene.duration;
+                    updateScene(selectedScene.id, {
+                      trimStart,
+                      duration: originalDuration - trimStart - trimEnd,
+                      originalDuration,
+                    });
+                  }}
+                  className="w-full"
+                />
+              </div>
+
+              {/* Trim End */}
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span>Trim End</span>
+                  <span className="text-muted-foreground">
+                    {(selectedScene.trimEnd || 0).toFixed(2)}s
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max={selectedScene.duration}
+                  step="0.01"
+                  value={selectedScene.trimEnd || 0}
+                  onChange={(e) => {
+                    const trimEnd = parseFloat(e.target.value);
+                    const trimStart = selectedScene.trimStart || 0;
+                    const originalDuration = selectedScene.originalDuration || selectedScene.duration;
+                    updateScene(selectedScene.id, {
+                      trimEnd,
+                      duration: originalDuration - trimStart - trimEnd,
+                      originalDuration,
+                    });
+                  }}
+                  className="w-full"
+                />
+              </div>
+
+              {/* Reset Trim Button */}
+              {(selectedScene.trimStart || selectedScene.trimEnd) && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  onClick={() => {
+                    const originalDuration = selectedScene.originalDuration || selectedScene.duration;
+                    updateScene(selectedScene.id, {
+                      trimStart: 0,
+                      trimEnd: 0,
+                      duration: originalDuration,
+                    });
+                  }}
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Reset Trim
+                </Button>
+              )}
+            </div>
           </div>
 
           {/* Filters */}
@@ -314,6 +401,41 @@ export function ScenePropertiesPanel() {
 
           {/* Actions */}
           <div className="pt-4 border-t space-y-2">
+            {/* Split Scene */}
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-2 block">
+                SPLIT SCENE AT (seconds)
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="number"
+                  min="0.1"
+                  max={selectedScene.duration - 0.1}
+                  step="0.1"
+                  value={splitTime}
+                  onChange={(e) => setSplitTime(e.target.value)}
+                  placeholder={`0.1 - ${(selectedScene.duration - 0.1).toFixed(1)}`}
+                  className="flex-1 px-3 py-2 text-sm border rounded-md bg-background"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const time = parseFloat(splitTime);
+                    if (time > 0 && time < selectedScene.duration) {
+                      splitScene(selectedScene.id, time);
+                      setSplitTime('');
+                    } else {
+                      alert(`Split time must be between 0.1 and ${(selectedScene.duration - 0.1).toFixed(1)} seconds`);
+                    }
+                  }}
+                  disabled={!splitTime}
+                >
+                  <Scissors className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+
             <Button
               variant="outline"
               size="sm"

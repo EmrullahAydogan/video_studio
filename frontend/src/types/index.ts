@@ -12,6 +12,9 @@ export interface Scene {
   src?: string; // video/image source
   width?: number;
   height?: number;
+  originalDuration?: number; // original duration before trimming
+  trimStart?: number; // trim from start in seconds
+  trimEnd?: number; // trim from end in seconds
 
   // AI properties
   prompt?: string;

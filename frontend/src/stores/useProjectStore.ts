@@ -22,6 +22,7 @@ interface ProjectStore {
   deleteScene: (id: string) => void;
   reorderScenes: (sceneIds: string[]) => void;
   duplicateScene: (id: string) => void;
+  splitScene: (id: string, splitTime: number) => void;
 
   // Audio actions
   addAudioTrack: (track: Omit<AudioTrack, 'id'>) => void;
@@ -203,6 +204,54 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
         updatedAt: new Date(),
       },
     });
+  },
+
+  splitScene: (id, splitTime) => {
+    const project = get().project;
+    if (!project) return;
+
+    const sceneIndex = project.scenes.findIndex((s) => s.id === id);
+    if (sceneIndex === -1) return;
+
+    const sceneToSplit = project.scenes[sceneIndex];
+    if (splitTime <= 0 || splitTime >= sceneToSplit.duration) return;
+
+    // Create first part (before split)
+    const firstPart: Scene = {
+      ...sceneToSplit,
+      id: crypto.randomUUID(),
+      duration: splitTime,
+      name: `${sceneToSplit.name} (Part 1)`,
+      trimEnd: (sceneToSplit.trimEnd || 0) + (sceneToSplit.duration - splitTime),
+    };
+
+    // Create second part (after split)
+    const secondPart: Scene = {
+      ...sceneToSplit,
+      id: crypto.randomUUID(),
+      duration: sceneToSplit.duration - splitTime,
+      startTime: sceneToSplit.startTime + splitTime,
+      name: `${sceneToSplit.name} (Part 2)`,
+      trimStart: (sceneToSplit.trimStart || 0) + splitTime,
+    };
+
+    // Replace original scene with two new scenes
+    const newScenes = [...project.scenes];
+    newScenes.splice(sceneIndex, 1, firstPart, secondPart);
+
+    const updatedProject = {
+      ...project,
+      scenes: newScenes,
+      updatedAt: new Date(),
+    };
+
+    set({
+      project: updatedProject,
+      hasUnsavedChanges: true,
+    });
+
+    // Auto-save
+    projectStorage.saveProject(updatedProject);
   },
 
   addAudioTrack: (trackData) => {
