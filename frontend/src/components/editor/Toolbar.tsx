@@ -11,15 +11,18 @@ import {
   Settings,
   Film,
   FolderOpen,
+  Type,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ExportDialog } from './ExportDialog';
 import { ProjectManager } from './ProjectManager';
+import { TextOverlayDialog } from './TextOverlayDialog';
 
 export function Toolbar() {
   const { project, saveProject, hasUnsavedChanges } = useProjectStore();
   const [showExportDialog, setShowExportDialog] = useState(false);
   const [showProjectManager, setShowProjectManager] = useState(false);
+  const [showTextOverlay, setShowTextOverlay] = useState(false);
 
   return (
     <>
@@ -30,6 +33,10 @@ export function Toolbar() {
       <ProjectManager
         isOpen={showProjectManager}
         onClose={() => setShowProjectManager(false)}
+      />
+      <TextOverlayDialog
+        isOpen={showTextOverlay}
+        onClose={() => setShowTextOverlay(false)}
       />
     <div className="h-14 border-b bg-card flex items-center justify-between px-4">
       {/* Left - Logo and Project Name */}
@@ -74,6 +81,15 @@ export function Toolbar() {
         >
           <Save className="w-4 h-4 mr-2" />
           Save{hasUnsavedChanges && '*'}
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setShowTextOverlay(true)}
+        >
+          <Type className="w-4 h-4 mr-2" />
+          Add Text
         </Button>
 
         <Button size="sm" onClick={() => setShowExportDialog(true)}>
