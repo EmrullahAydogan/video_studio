@@ -2,40 +2,87 @@
 
 import { useState } from 'react';
 import { useProjectStore } from '@/stores/useProjectStore';
-import { Sparkles, Image, Video, Wand2, Zap } from 'lucide-react';
+import { Sparkles, Image, Video, Wand2, Zap, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { AIGenerationRequest } from '@/types';
+import { api } from '@/lib/api';
 
 export function AIPanel() {
   const { addScene } = useProjectStore();
   const [prompt, setPrompt] = useState('');
   const [generationType, setGenerationType] = useState<'image' | 'video'>('image');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
 
     setIsGenerating(true);
+    setError(null);
 
     try {
-      // TODO: Implement actual AI generation
-      // For now, create a placeholder scene
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      if (generationType === 'image') {
+        // Generate image with DALL-E
+        const response = await api.generateImage(prompt);
 
-      const newScene = {
-        type: 'ai-generated' as const,
-        name: prompt.slice(0, 30) + '...',
-        duration: generationType === 'video' ? 5 : 3,
-        startTime: 0, // Will be calculated by store
-        prompt,
-        aiProvider: 'openai' as const,
-        thumbnail: undefined,
-      };
+        if (response.success && response.image) {
+          const newScene = {
+            type: 'ai-generated' as const,
+            name: prompt.slice(0, 30) + '...',
+            duration: 3,
+            startTime: 0,
+            prompt,
+            aiProvider: 'openai' as const,
+            src: response.image.url,
+            thumbnail: response.image.url,
+          };
 
-      addScene(newScene);
-      setPrompt('');
-    } catch (error) {
-      console.error('Generation failed:', error);
+          addScene(newScene);
+          setPrompt('');
+        }
+      } else {
+        // Generate video (Runway ML or similar)
+        const response = await api.generateVideo(prompt, 5);
+
+        if (response.success) {
+          // For video, we get a job ID and need to poll for completion
+          // For now, create a placeholder scene
+          const newScene = {
+            type: 'ai-generated' as const,
+            name: prompt.slice(0, 30) + '...',
+            duration: 5,
+            startTime: 0,
+            prompt,
+            aiProvider: 'runway' as const,
+            thumbnail: undefined,
+          };
+
+          addScene(newScene);
+          setPrompt('');
+
+          // TODO: Poll for video completion using jobId
+          console.log('Video generation started, jobId:', response.jobId);
+        }
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Generation failed';
+      setError(errorMessage);
+      console.error('Generation error:', err);
+
+      // Fall back to placeholder for demo purposes
+      if (errorMessage.includes('Failed to fetch') || errorMessage.includes('API')) {
+        const newScene = {
+          type: 'ai-generated' as const,
+          name: prompt.slice(0, 30) + '...',
+          duration: generationType === 'video' ? 5 : 3,
+          startTime: 0,
+          prompt,
+          aiProvider: 'openai' as const,
+          thumbnail: undefined,
+        };
+        addScene(newScene);
+        setPrompt('');
+        setError('Note: Using demo mode. Configure API keys for real AI generation.');
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -118,6 +165,14 @@ export function AIPanel() {
             disabled={isGenerating}
           />
         </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-md flex items-start gap-2">
+            <AlertCircle className="w-4 h-4 text-destructive flex-shrink-0 mt-0.5" />
+            <p className="text-xs text-destructive">{error}</p>
+          </div>
+        )}
 
         {/* Generate Button */}
         <Button
