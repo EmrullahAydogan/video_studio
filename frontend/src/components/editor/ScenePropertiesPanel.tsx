@@ -19,6 +19,7 @@ import {
   Maximize2,
   Eye,
   Gauge,
+  Wand2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -890,6 +891,117 @@ export function ScenePropertiesPanel() {
                         </select>
                       </div>
                     )}
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* AI Background Removal - Only for video and image scenes */}
+          {(selectedScene.type === 'video' || selectedScene.type === 'image') && (
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-2 block flex items-center gap-2">
+                <Wand2 className="w-3 h-3" />
+                AI BACKGROUND REMOVAL
+              </label>
+
+              <div className="space-y-3">
+                {/* Enable Toggle */}
+                <div className="flex items-center justify-between p-3 border rounded-lg">
+                  <div>
+                    <div className="text-sm font-medium">Remove Background</div>
+                    <div className="text-xs text-muted-foreground">
+                      AI-powered background removal
+                    </div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedScene.backgroundRemoval?.enabled || false}
+                      onChange={(e) =>
+                        updateScene(selectedScene.id, {
+                          backgroundRemoval: {
+                            enabled: e.target.checked,
+                            provider: 'remove-bg',
+                            quality: 'medium',
+                          },
+                        })
+                      }
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                  </label>
+                </div>
+
+                {selectedScene.backgroundRemoval?.enabled && (
+                  <>
+                    {/* AI Provider */}
+                    <div>
+                      <div className="text-xs mb-1">AI Provider</div>
+                      <select
+                        value={selectedScene.backgroundRemoval?.provider || 'remove-bg'}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            backgroundRemoval: {
+                              ...selectedScene.backgroundRemoval!,
+                              provider: e.target.value as any,
+                            },
+                          })
+                        }
+                        className="w-full px-3 py-2 text-sm border rounded-md bg-background"
+                      >
+                        <option value="remove-bg">Remove.bg</option>
+                        <option value="stability">Stability AI</option>
+                        <option value="runway">Runway ML</option>
+                      </select>
+                    </div>
+
+                    {/* Quality */}
+                    <div>
+                      <div className="text-xs mb-1">Processing Quality</div>
+                      <select
+                        value={selectedScene.backgroundRemoval?.quality || 'medium'}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            backgroundRemoval: {
+                              ...selectedScene.backgroundRemoval!,
+                              quality: e.target.value as any,
+                            },
+                          })
+                        }
+                        className="w-full px-3 py-2 text-sm border rounded-md bg-background"
+                      >
+                        <option value="low">Low (Faster)</option>
+                        <option value="medium">Medium (Balanced)</option>
+                        <option value="high">High (Best Quality)</option>
+                      </select>
+                    </div>
+
+                    {/* Info Message */}
+                    <div className="text-xs bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                      <div className="font-medium text-blue-900 dark:text-blue-100 mb-1">
+                        ℹ️ AI Integration Required
+                      </div>
+                      <div className="text-blue-700 dark:text-blue-300">
+                        Background removal requires an AI provider API key. Configure your API
+                        keys in Settings to enable this feature.
+                      </div>
+                    </div>
+
+                    {/* Reset Button */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      onClick={() =>
+                        updateScene(selectedScene.id, {
+                          backgroundRemoval: undefined,
+                        })
+                      }
+                    >
+                      <X className="w-4 h-4 mr-2" />
+                      Disable Background Removal
+                    </Button>
                   </>
                 )}
               </div>

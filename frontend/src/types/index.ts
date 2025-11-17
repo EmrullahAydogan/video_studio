@@ -51,6 +51,13 @@ export interface Scene {
 
   // Playback Speed (per scene)
   playbackSpeed?: number; // 0.25, 0.5, 1, 1.5, 2 (slow motion, normal, fast)
+
+  // AI Effects
+  backgroundRemoval?: {
+    enabled: boolean;
+    provider?: 'remove-bg' | 'stability' | 'runway';
+    quality?: 'low' | 'medium' | 'high';
+  };
 }
 
 export interface Filter {
