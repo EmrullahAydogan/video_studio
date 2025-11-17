@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -20,7 +20,7 @@ import { useProjectStore } from '@/stores/useProjectStore';
 import { SceneCard } from './SceneCard';
 import { AudioTrackCard } from './AudioTrackCard';
 import { formatTime } from '@/lib/utils';
-import { Plus, ZoomIn, ZoomOut } from 'lucide-react';
+import { Plus, ZoomIn, ZoomOut, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function Timeline() {
@@ -35,10 +35,12 @@ export function Timeline() {
     setZoom,
     deleteAudioTrack,
     updateAudioTrack,
+    addScene,
   } = useProjectStore();
 
   const timelineRef = useRef<HTMLDivElement>(null);
   const playheadRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -86,6 +88,75 @@ export function Timeline() {
     setZoom(newZoom);
   };
 
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = Array.from(e.dataTransfer.files);
+    const totalDuration = project?.scenes.reduce(
+      (max, scene) => Math.max(max, scene.startTime + scene.duration),
+      0
+    ) ?? 0;
+
+    for (const file of files) {
+      const fileType = file.type;
+
+      // Handle video files
+      if (fileType.startsWith('video/')) {
+        const url = URL.createObjectURL(file);
+        addScene({
+          type: 'video',
+          name: file.name,
+          src: url,
+          duration: 5, // Default duration, will be updated when video loads
+          startTime: totalDuration,
+          thumbnail: url,
+        });
+      }
+      // Handle image files
+      else if (fileType.startsWith('image/')) {
+        const url = URL.createObjectURL(file);
+        addScene({
+          type: 'image',
+          name: file.name,
+          src: url,
+          duration: 3, // Default 3 seconds for images
+          startTime: totalDuration,
+          thumbnail: url,
+        });
+      }
+      // Handle audio files
+      else if (fileType.startsWith('audio/')) {
+        const url = URL.createObjectURL(file);
+        useProjectStore.getState().addAudioTrack({
+          name: file.name,
+          src: url,
+          startTime: 0,
+          duration: 5, // Default duration
+          volume: 1,
+        });
+      }
+    }
+  };
+
   if (!project) {
     return (
       <div className="h-full flex items-center justify-center text-muted-foreground">
@@ -100,7 +171,28 @@ export function Timeline() {
   );
 
   return (
-    <div className="h-full flex flex-col bg-background border-t">
+    <div
+      className={`h-full flex flex-col bg-background border-t relative ${
+        isDragging ? 'ring-4 ring-primary ring-inset' : ''
+      }`}
+      onDragEnter={handleDragEnter}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+      {/* Drag & Drop Overlay */}
+      {isDragging && (
+        <div className="absolute inset-0 bg-primary/10 backdrop-blur-sm z-50 flex items-center justify-center pointer-events-none">
+          <div className="bg-card border-2 border-primary rounded-lg p-8 shadow-lg">
+            <Upload className="w-16 h-16 mx-auto mb-4 text-primary" />
+            <p className="text-xl font-semibold text-center">Drop files here</p>
+            <p className="text-sm text-muted-foreground text-center mt-2">
+              Supports video, image, and audio files
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Timeline Header */}
       <div className="flex items-center justify-between px-4 py-2 border-b bg-card">
         <div className="flex items-center gap-2">
