@@ -58,6 +58,19 @@ export interface Scene {
     provider?: 'remove-bg' | 'stability' | 'runway';
     quality?: 'low' | 'medium' | 'high';
   };
+
+  // Transform Effects
+  transform?: {
+    rotate?: number; // 0, 90, 180, 270 degrees
+    flipHorizontal?: boolean;
+    flipVertical?: boolean;
+    crop?: {
+      top: number; // percentage 0-50
+      right: number;
+      bottom: number;
+      left: number;
+    };
+  };
 }
 
 export interface Filter {

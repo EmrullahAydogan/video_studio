@@ -20,6 +20,10 @@ import {
   Eye,
   Gauge,
   Wand2,
+  RotateCw,
+  FlipHorizontal,
+  FlipVertical,
+  Crop,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -892,6 +896,256 @@ export function ScenePropertiesPanel() {
                       </div>
                     )}
                   </>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Transform Effects - Only for video and image scenes */}
+          {(selectedScene.type === 'video' || selectedScene.type === 'image') && (
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-2 block flex items-center gap-2">
+                <RotateCw className="w-3 h-3" />
+                TRANSFORM
+              </label>
+
+              <div className="space-y-3">
+                {/* Rotation */}
+                <div>
+                  <div className="text-xs mb-2">Rotation</div>
+                  <div className="grid grid-cols-4 gap-1">
+                    <Button
+                      size="sm"
+                      variant={!selectedScene.transform?.rotate || selectedScene.transform?.rotate === 0 ? 'default' : 'outline'}
+                      className="h-8 text-xs"
+                      onClick={() =>
+                        updateScene(selectedScene.id, {
+                          transform: { ...selectedScene.transform, rotate: 0 },
+                        })
+                      }
+                    >
+                      0°
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={selectedScene.transform?.rotate === 90 ? 'default' : 'outline'}
+                      className="h-8 text-xs"
+                      onClick={() =>
+                        updateScene(selectedScene.id, {
+                          transform: { ...selectedScene.transform, rotate: 90 },
+                        })
+                      }
+                    >
+                      90°
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={selectedScene.transform?.rotate === 180 ? 'default' : 'outline'}
+                      className="h-8 text-xs"
+                      onClick={() =>
+                        updateScene(selectedScene.id, {
+                          transform: { ...selectedScene.transform, rotate: 180 },
+                        })
+                      }
+                    >
+                      180°
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={selectedScene.transform?.rotate === 270 ? 'default' : 'outline'}
+                      className="h-8 text-xs"
+                      onClick={() =>
+                        updateScene(selectedScene.id, {
+                          transform: { ...selectedScene.transform, rotate: 270 },
+                        })
+                      }
+                    >
+                      270°
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Flip Controls */}
+                <div>
+                  <div className="text-xs mb-2">Flip</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      size="sm"
+                      variant={selectedScene.transform?.flipHorizontal ? 'default' : 'outline'}
+                      className="h-8"
+                      onClick={() =>
+                        updateScene(selectedScene.id, {
+                          transform: {
+                            ...selectedScene.transform,
+                            flipHorizontal: !selectedScene.transform?.flipHorizontal,
+                          },
+                        })
+                      }
+                    >
+                      <FlipHorizontal className="w-4 h-4 mr-2" />
+                      Horizontal
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={selectedScene.transform?.flipVertical ? 'default' : 'outline'}
+                      className="h-8"
+                      onClick={() =>
+                        updateScene(selectedScene.id, {
+                          transform: {
+                            ...selectedScene.transform,
+                            flipVertical: !selectedScene.transform?.flipVertical,
+                          },
+                        })
+                      }
+                    >
+                      <FlipVertical className="w-4 h-4 mr-2" />
+                      Vertical
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Crop Controls */}
+                <div>
+                  <div className="text-xs mb-2 flex items-center gap-2">
+                    <Crop className="w-3 h-3" />
+                    Crop
+                  </div>
+                  <div className="space-y-2">
+                    {/* Top Crop */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>Top</span>
+                        <span className="text-muted-foreground">
+                          {selectedScene.transform?.crop?.top || 0}%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="50"
+                        value={selectedScene.transform?.crop?.top || 0}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            transform: {
+                              ...selectedScene.transform,
+                              crop: {
+                                top: parseInt(e.target.value),
+                                right: selectedScene.transform?.crop?.right || 0,
+                                bottom: selectedScene.transform?.crop?.bottom || 0,
+                                left: selectedScene.transform?.crop?.left || 0,
+                              },
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Bottom Crop */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>Bottom</span>
+                        <span className="text-muted-foreground">
+                          {selectedScene.transform?.crop?.bottom || 0}%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="50"
+                        value={selectedScene.transform?.crop?.bottom || 0}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            transform: {
+                              ...selectedScene.transform,
+                              crop: {
+                                top: selectedScene.transform?.crop?.top || 0,
+                                right: selectedScene.transform?.crop?.right || 0,
+                                bottom: parseInt(e.target.value),
+                                left: selectedScene.transform?.crop?.left || 0,
+                              },
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Left Crop */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>Left</span>
+                        <span className="text-muted-foreground">
+                          {selectedScene.transform?.crop?.left || 0}%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="50"
+                        value={selectedScene.transform?.crop?.left || 0}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            transform: {
+                              ...selectedScene.transform,
+                              crop: {
+                                top: selectedScene.transform?.crop?.top || 0,
+                                right: selectedScene.transform?.crop?.right || 0,
+                                bottom: selectedScene.transform?.crop?.bottom || 0,
+                                left: parseInt(e.target.value),
+                              },
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Right Crop */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>Right</span>
+                        <span className="text-muted-foreground">
+                          {selectedScene.transform?.crop?.right || 0}%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="50"
+                        value={selectedScene.transform?.crop?.right || 0}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            transform: {
+                              ...selectedScene.transform,
+                              crop: {
+                                top: selectedScene.transform?.crop?.top || 0,
+                                right: parseInt(e.target.value),
+                                bottom: selectedScene.transform?.crop?.bottom || 0,
+                                left: selectedScene.transform?.crop?.left || 0,
+                              },
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Reset Transform Button */}
+                {selectedScene.transform && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={() =>
+                      updateScene(selectedScene.id, { transform: undefined })
+                    }
+                  >
+                    <X className="w-4 h-4 mr-2" />
+                    Reset Transform
+                  </Button>
                 )}
               </div>
             </div>
