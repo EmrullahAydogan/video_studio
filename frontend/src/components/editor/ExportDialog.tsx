@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useProjectStore } from '@/stores/useProjectStore';
 import { api } from '@/lib/api';
-import { Download, X, Loader2 } from 'lucide-react';
+import { Download, X, Loader2, Info, Film, HardDrive, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ExportSettings } from '@/types';
 
@@ -90,9 +90,26 @@ export function ExportDialog({ isOpen, onClose }: ExportDialogProps) {
   const formatOptions: Array<ExportSettings['format']> = ['mp4', 'webm', 'gif'];
   const fpsOptions = [24, 30, 60];
 
+  // Calculate export statistics
+  const totalDuration = project?.scenes.reduce(
+    (max, scene) => Math.max(max, scene.startTime + scene.duration),
+    0
+  ) ?? 0;
+
+  const estimatedFileSize = (() => {
+    const bitrates = {
+      low: 2,
+      medium: 5,
+      high: 10,
+      '4k': 25,
+    };
+    const bitrate = bitrates[settings.quality];
+    return ((bitrate * totalDuration) / 8).toFixed(1); // MB
+  })();
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-card border rounded-lg shadow-lg w-full max-w-md p-6">
+      <div className="bg-card border rounded-lg shadow-lg w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-semibold flex items-center gap-2">
@@ -106,6 +123,62 @@ export function ExportDialog({ isOpen, onClose }: ExportDialogProps) {
           >
             <X className="w-5 h-5" />
           </button>
+        </div>
+
+        {/* Export Preview */}
+        <div className="mb-6 border rounded-lg p-4 bg-secondary/20">
+          <div className="flex items-center gap-2 mb-3">
+            <Info className="w-4 h-4 text-primary" />
+            <h3 className="font-medium text-sm">Export Preview</h3>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            {/* Video Preview Box */}
+            <div className="col-span-2 bg-black/20 rounded-lg flex items-center justify-center aspect-video border border-border">
+              <div className="text-center">
+                <Film className="w-12 h-12 mx-auto mb-2 text-muted-foreground" />
+                <div className="text-sm text-muted-foreground">
+                  {settings.resolution.width} × {settings.resolution.height}
+                </div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {(settings.resolution.width / settings.resolution.height).toFixed(2)}:1 aspect ratio
+                </div>
+              </div>
+            </div>
+
+            {/* Statistics */}
+            <div className="flex items-start gap-2">
+              <Clock className="w-4 h-4 text-primary mt-0.5" />
+              <div>
+                <div className="text-xs text-muted-foreground">Duration</div>
+                <div className="font-medium">{totalDuration.toFixed(1)}s</div>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-2">
+              <HardDrive className="w-4 h-4 text-primary mt-0.5" />
+              <div>
+                <div className="text-xs text-muted-foreground">Est. Size</div>
+                <div className="font-medium">~{estimatedFileSize} MB</div>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-2">
+              <Film className="w-4 h-4 text-primary mt-0.5" />
+              <div>
+                <div className="text-xs text-muted-foreground">Scenes</div>
+                <div className="font-medium">{project?.scenes.length || 0}</div>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-2">
+              <Download className="w-4 h-4 text-primary mt-0.5" />
+              <div>
+                <div className="text-xs text-muted-foreground">Format</div>
+                <div className="font-medium">{settings.format.toUpperCase()}</div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Settings */}
