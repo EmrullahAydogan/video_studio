@@ -14,6 +14,10 @@ import {
   Type,
   Palette,
   X,
+  Layers,
+  Move,
+  Maximize2,
+  Eye,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -173,6 +177,257 @@ export function ScenePropertiesPanel() {
                 >
                   <X className="w-4 h-4 mr-2" />
                   Reset Trim
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {/* Layer & Position Controls */}
+          <div>
+            <label className="text-xs font-medium text-muted-foreground mb-2 block flex items-center gap-2">
+              <Layers className="w-3 h-3" />
+              LAYER & POSITION
+            </label>
+
+            <div className="space-y-3">
+              {/* Quick Position Presets */}
+              <div>
+                <div className="text-xs mb-2">Quick Position</div>
+                <div className="grid grid-cols-3 gap-1">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, {
+                        position: { x: 10, y: 10 },
+                        scale: 0.3,
+                      })
+                    }
+                  >
+                    Top L
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, {
+                        position: { x: 50, y: 10 },
+                        scale: 0.3,
+                      })
+                    }
+                  >
+                    Top C
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, {
+                        position: { x: 90, y: 10 },
+                        scale: 0.3,
+                      })
+                    }
+                  >
+                    Top R
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, {
+                        position: { x: 10, y: 80 },
+                        scale: 0.3,
+                      })
+                    }
+                  >
+                    Bot L
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, {
+                        position: { x: 50, y: 50 },
+                        scale: 1,
+                      })
+                    }
+                  >
+                    Center
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, {
+                        position: { x: 90, y: 80 },
+                        scale: 0.3,
+                      })
+                    }
+                  >
+                    Bot R
+                  </Button>
+                </div>
+              </div>
+
+              {/* Layer (Z-Index) */}
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span>Layer (Z-Index)</span>
+                  <span className="text-muted-foreground">
+                    {selectedScene.layer || 0}
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="10"
+                  value={selectedScene.layer || 0}
+                  onChange={(e) =>
+                    updateScene(selectedScene.id, {
+                      layer: parseInt(e.target.value),
+                    })
+                  }
+                  className="w-full"
+                />
+              </div>
+
+              {/* Position X */}
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span>Position X</span>
+                  <span className="text-muted-foreground">
+                    {selectedScene.position?.x || 50}%
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={selectedScene.position?.x || 50}
+                  onChange={(e) =>
+                    updateScene(selectedScene.id, {
+                      position: {
+                        x: parseInt(e.target.value),
+                        y: selectedScene.position?.y || 50,
+                      },
+                    })
+                  }
+                  className="w-full"
+                />
+              </div>
+
+              {/* Position Y */}
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span>Position Y</span>
+                  <span className="text-muted-foreground">
+                    {selectedScene.position?.y || 50}%
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={selectedScene.position?.y || 50}
+                  onChange={(e) =>
+                    updateScene(selectedScene.id, {
+                      position: {
+                        x: selectedScene.position?.x || 50,
+                        y: parseInt(e.target.value),
+                      },
+                    })
+                  }
+                  className="w-full"
+                />
+              </div>
+
+              {/* Scale */}
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span>Scale</span>
+                  <span className="text-muted-foreground">
+                    {((selectedScene.scale || 1) * 100).toFixed(0)}%
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="10"
+                  max="200"
+                  value={(selectedScene.scale || 1) * 100}
+                  onChange={(e) =>
+                    updateScene(selectedScene.id, {
+                      scale: parseInt(e.target.value) / 100,
+                    })
+                  }
+                  className="w-full"
+                />
+              </div>
+
+              {/* Opacity */}
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span>Opacity</span>
+                  <span className="text-muted-foreground">
+                    {((selectedScene.opacity || 1) * 100).toFixed(0)}%
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={(selectedScene.opacity || 1) * 100}
+                  onChange={(e) =>
+                    updateScene(selectedScene.id, {
+                      opacity: parseInt(e.target.value) / 100,
+                    })
+                  }
+                  className="w-full"
+                />
+              </div>
+
+              {/* Blend Mode */}
+              <div>
+                <div className="text-xs mb-1">Blend Mode</div>
+                <select
+                  value={selectedScene.blendMode || 'normal'}
+                  onChange={(e) =>
+                    updateScene(selectedScene.id, {
+                      blendMode: e.target.value as any,
+                    })
+                  }
+                  className="w-full px-3 py-2 text-sm border rounded-md bg-background"
+                >
+                  <option value="normal">Normal</option>
+                  <option value="multiply">Multiply</option>
+                  <option value="screen">Screen</option>
+                  <option value="overlay">Overlay</option>
+                </select>
+              </div>
+
+              {/* Reset Position Button */}
+              {(selectedScene.position || selectedScene.scale !== 1 || selectedScene.opacity !== 1) && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  onClick={() =>
+                    updateScene(selectedScene.id, {
+                      position: undefined,
+                      scale: 1,
+                      opacity: 1,
+                      layer: 0,
+                      blendMode: 'normal',
+                    })
+                  }
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Reset Layer
                 </Button>
               )}
             </div>

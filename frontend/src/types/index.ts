@@ -26,6 +26,16 @@ export interface Scene {
   fontFamily?: string;
   color?: string;
 
+  // Layer/Position properties (for PiP and overlays)
+  layer?: number; // z-index, higher = on top
+  position?: {
+    x: number; // percentage (0-100)
+    y: number; // percentage (0-100)
+  };
+  scale?: number; // scale factor (0.1-2.0)
+  opacity?: number; // opacity (0-1)
+  blendMode?: 'normal' | 'multiply' | 'screen' | 'overlay';
+
   // Effects
   filters?: Filter[];
   transition?: Transition;
