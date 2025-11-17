@@ -25,6 +25,7 @@ import { AudioUploadDialog } from './AudioUploadDialog';
 import { PresetsDialog } from './PresetsDialog';
 import { StickersDialog } from './StickersDialog';
 import { MarkersDialog } from './MarkersDialog';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export function Toolbar() {
   const { project, saveProject, hasUnsavedChanges } = useProjectStore();
@@ -163,7 +164,8 @@ export function Toolbar() {
       </div>
 
       {/* Right - Settings */}
-      <div>
+      <div className="flex items-center gap-2">
+        <ThemeToggle />
         <Button variant="ghost" size="icon">
           <Settings className="w-4 h-4" />
         </Button>
