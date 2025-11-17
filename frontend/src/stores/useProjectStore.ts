@@ -33,6 +33,9 @@ interface ProjectStore {
   setIsPlaying: (isPlaying: boolean) => void;
   setZoom: (zoom: number) => void;
   setSelectedScene: (id: string | null) => void;
+  setPlaybackSpeed: (speed: number) => void;
+  setLoop: (loop: boolean) => void;
+  setVolume: (volume: number) => void;
 
   // Utility
   getTotalDuration: () => number;
@@ -46,6 +49,9 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
     currentTime: 0,
     isPlaying: false,
     selectedSceneId: null,
+    playbackSpeed: 1,
+    loop: false,
+    volume: 1,
   },
 
   createProject: (name: string) => {
@@ -284,6 +290,24 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
   setSelectedScene: (id) => {
     set((state) => ({
       timeline: { ...state.timeline, selectedSceneId: id },
+    }));
+  },
+
+  setPlaybackSpeed: (speed) => {
+    set((state) => ({
+      timeline: { ...state.timeline, playbackSpeed: speed },
+    }));
+  },
+
+  setLoop: (loop) => {
+    set((state) => ({
+      timeline: { ...state.timeline, loop },
+    }));
+  },
+
+  setVolume: (volume) => {
+    set((state) => ({
+      timeline: { ...state.timeline, volume },
     }));
   },
 
