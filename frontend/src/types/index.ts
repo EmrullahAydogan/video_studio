@@ -77,11 +77,20 @@ export interface AudioTrack {
   fadeOut?: number; // fade out duration in seconds
 }
 
+export interface Marker {
+  id: string;
+  name: string;
+  time: number; // timestamp in seconds
+  color?: string; // marker color (default: primary color)
+  description?: string; // optional description
+}
+
 export interface Project {
   id: string;
   name: string;
   scenes: Scene[];
   audioTracks: AudioTrack[];
+  markers: Marker[];
   totalDuration: number;
   resolution: {
     width: number;

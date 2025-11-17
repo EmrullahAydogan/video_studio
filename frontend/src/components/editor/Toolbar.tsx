@@ -15,6 +15,7 @@ import {
   Music,
   Palette,
   Smile,
+  Bookmark,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ExportDialog } from './ExportDialog';
@@ -23,6 +24,7 @@ import { TextOverlayDialog } from './TextOverlayDialog';
 import { AudioUploadDialog } from './AudioUploadDialog';
 import { PresetsDialog } from './PresetsDialog';
 import { StickersDialog } from './StickersDialog';
+import { MarkersDialog } from './MarkersDialog';
 
 export function Toolbar() {
   const { project, saveProject, hasUnsavedChanges } = useProjectStore();
@@ -32,6 +34,7 @@ export function Toolbar() {
   const [showAudioUpload, setShowAudioUpload] = useState(false);
   const [showPresets, setShowPresets] = useState(false);
   const [showStickers, setShowStickers] = useState(false);
+  const [showMarkers, setShowMarkers] = useState(false);
 
   return (
     <>
@@ -58,6 +61,10 @@ export function Toolbar() {
       <StickersDialog
         isOpen={showStickers}
         onClose={() => setShowStickers(false)}
+      />
+      <MarkersDialog
+        isOpen={showMarkers}
+        onClose={() => setShowMarkers(false)}
       />
     <div className="h-14 border-b bg-card flex items-center justify-between px-4">
       {/* Left - Logo and Project Name */}
@@ -138,6 +145,15 @@ export function Toolbar() {
         >
           <Smile className="w-4 h-4 mr-2" />
           Stickers
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setShowMarkers(true)}
+        >
+          <Bookmark className="w-4 h-4 mr-2" />
+          Markers
         </Button>
 
         <Button size="sm" onClick={() => setShowExportDialog(true)}>

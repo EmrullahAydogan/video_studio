@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Scene, AudioTrack, Project, TimelineState } from '@/types';
+import { Scene, AudioTrack, Marker, Project, TimelineState } from '@/types';
 import { projectStorage } from '@/lib/projectStorage';
 
 interface ProjectStore {
@@ -28,6 +28,12 @@ interface ProjectStore {
   addAudioTrack: (track: Omit<AudioTrack, 'id'>) => void;
   updateAudioTrack: (id: string, updates: Partial<AudioTrack>) => void;
   deleteAudioTrack: (id: string) => void;
+
+  // Marker actions
+  addMarker: (marker: Omit<Marker, 'id'>) => void;
+  updateMarker: (id: string, updates: Partial<Marker>) => void;
+  deleteMarker: (id: string) => void;
+  jumpToMarker: (id: string) => void;
 
   // Timeline actions
   setCurrentTime: (time: number) => void;
@@ -61,6 +67,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
       name,
       scenes: [],
       audioTracks: [],
+      markers: [],
       totalDuration: 0,
       resolution: { width: 1920, height: 1080 },
       fps: 30,
@@ -72,6 +79,10 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
   },
 
   loadProject: (project: Project) => {
+    // Ensure markers array exists for backwards compatibility
+    if (!project.markers) {
+      project.markers = [];
+    }
     set({ project, hasUnsavedChanges: false });
   },
 
@@ -316,6 +327,82 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 
     // Auto-save
     projectStorage.saveProject(updatedProject);
+  },
+
+  addMarker: (markerData) => {
+    const project = get().project;
+    if (!project) return;
+
+    const newMarker: Marker = {
+      ...markerData,
+      id: crypto.randomUUID(),
+    };
+
+    const updatedProject = {
+      ...project,
+      markers: [...project.markers, newMarker].sort((a, b) => a.time - b.time),
+      updatedAt: new Date(),
+    };
+
+    set({
+      project: updatedProject,
+      hasUnsavedChanges: true,
+    });
+
+    // Auto-save
+    projectStorage.saveProject(updatedProject);
+  },
+
+  updateMarker: (id, updates) => {
+    const project = get().project;
+    if (!project) return;
+
+    const updatedProject = {
+      ...project,
+      markers: project.markers
+        .map((marker) => (marker.id === id ? { ...marker, ...updates } : marker))
+        .sort((a, b) => a.time - b.time),
+      updatedAt: new Date(),
+    };
+
+    set({
+      project: updatedProject,
+      hasUnsavedChanges: true,
+    });
+
+    // Auto-save
+    projectStorage.saveProject(updatedProject);
+  },
+
+  deleteMarker: (id) => {
+    const project = get().project;
+    if (!project) return;
+
+    const updatedProject = {
+      ...project,
+      markers: project.markers.filter((marker) => marker.id !== id),
+      updatedAt: new Date(),
+    };
+
+    set({
+      project: updatedProject,
+      hasUnsavedChanges: true,
+    });
+
+    // Auto-save
+    projectStorage.saveProject(updatedProject);
+  },
+
+  jumpToMarker: (id) => {
+    const project = get().project;
+    if (!project) return;
+
+    const marker = project.markers.find((m) => m.id === id);
+    if (!marker) return;
+
+    set((state) => ({
+      timeline: { ...state.timeline, currentTime: marker.time },
+    }));
   },
 
   setCurrentTime: (time) => {
