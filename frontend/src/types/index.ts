@@ -12,6 +12,9 @@ export interface Scene {
   src?: string; // video/image source
   width?: number;
   height?: number;
+  originalDuration?: number; // original duration before trimming
+  trimStart?: number; // trim from start in seconds
+  trimEnd?: number; // trim from end in seconds
 
   // AI properties
   prompt?: string;
@@ -22,6 +25,25 @@ export interface Scene {
   fontSize?: number;
   fontFamily?: string;
   color?: string;
+  backgroundColor?: string;
+
+  // Text Animation properties
+  textAnimation?: {
+    type: 'none' | 'fadeIn' | 'slideIn' | 'bounce' | 'typewriter' | 'zoom' | 'rotate';
+    duration: number; // in seconds
+    delay: number; // in seconds
+    direction?: 'left' | 'right' | 'up' | 'down';
+  };
+
+  // Layer/Position properties (for PiP and overlays)
+  layer?: number; // z-index, higher = on top
+  position?: {
+    x: number; // percentage (0-100)
+    y: number; // percentage (0-100)
+  };
+  scale?: number; // scale factor (0.1-2.0)
+  opacity?: number; // opacity (0-1)
+  blendMode?: 'normal' | 'multiply' | 'screen' | 'overlay';
 
   // Effects
   filters?: Filter[];
@@ -90,4 +112,7 @@ export interface TimelineState {
   currentTime: number; // playhead position in seconds
   isPlaying: boolean;
   selectedSceneId: string | null;
+  playbackSpeed: number; // 0.25, 0.5, 1, 1.5, 2
+  loop: boolean;
+  volume: number; // 0-1
 }

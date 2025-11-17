@@ -14,13 +14,18 @@ import {
   Type,
   Palette,
   X,
+  Layers,
+  Move,
+  Maximize2,
+  Eye,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function ScenePropertiesPanel() {
-  const { timeline, project, updateScene, deleteScene, duplicateScene } =
+  const { timeline, project, updateScene, deleteScene, duplicateScene, splitScene } =
     useProjectStore();
   const [isOpen, setIsOpen] = useState(true);
+  const [splitTime, setSplitTime] = useState('');
 
   const selectedScene = project?.scenes.find(
     (s) => s.id === timeline.selectedSceneId
@@ -89,6 +94,343 @@ export function ScenePropertiesPanel() {
               }
               className="w-full px-3 py-2 text-sm border rounded-md bg-background"
             />
+          </div>
+
+          {/* Trim Controls */}
+          <div>
+            <label className="text-xs font-medium text-muted-foreground mb-2 block flex items-center gap-2">
+              <Scissors className="w-3 h-3" />
+              TRIM
+            </label>
+
+            {/* Trim Start */}
+            <div className="space-y-3">
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span>Trim Start</span>
+                  <span className="text-muted-foreground">
+                    {(selectedScene.trimStart || 0).toFixed(2)}s
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max={selectedScene.duration}
+                  step="0.01"
+                  value={selectedScene.trimStart || 0}
+                  onChange={(e) => {
+                    const trimStart = parseFloat(e.target.value);
+                    const trimEnd = selectedScene.trimEnd || 0;
+                    const originalDuration = selectedScene.originalDuration || selectedScene.duration;
+                    updateScene(selectedScene.id, {
+                      trimStart,
+                      duration: originalDuration - trimStart - trimEnd,
+                      originalDuration,
+                    });
+                  }}
+                  className="w-full"
+                />
+              </div>
+
+              {/* Trim End */}
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span>Trim End</span>
+                  <span className="text-muted-foreground">
+                    {(selectedScene.trimEnd || 0).toFixed(2)}s
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max={selectedScene.duration}
+                  step="0.01"
+                  value={selectedScene.trimEnd || 0}
+                  onChange={(e) => {
+                    const trimEnd = parseFloat(e.target.value);
+                    const trimStart = selectedScene.trimStart || 0;
+                    const originalDuration = selectedScene.originalDuration || selectedScene.duration;
+                    updateScene(selectedScene.id, {
+                      trimEnd,
+                      duration: originalDuration - trimStart - trimEnd,
+                      originalDuration,
+                    });
+                  }}
+                  className="w-full"
+                />
+              </div>
+
+              {/* Reset Trim Button */}
+              {(selectedScene.trimStart || selectedScene.trimEnd) && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  onClick={() => {
+                    const originalDuration = selectedScene.originalDuration || selectedScene.duration;
+                    updateScene(selectedScene.id, {
+                      trimStart: 0,
+                      trimEnd: 0,
+                      duration: originalDuration,
+                    });
+                  }}
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Reset Trim
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {/* Layer & Position Controls */}
+          <div>
+            <label className="text-xs font-medium text-muted-foreground mb-2 block flex items-center gap-2">
+              <Layers className="w-3 h-3" />
+              LAYER & POSITION
+            </label>
+
+            <div className="space-y-3">
+              {/* Quick Position Presets */}
+              <div>
+                <div className="text-xs mb-2">Quick Position</div>
+                <div className="grid grid-cols-3 gap-1">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, {
+                        position: { x: 10, y: 10 },
+                        scale: 0.3,
+                      })
+                    }
+                  >
+                    Top L
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, {
+                        position: { x: 50, y: 10 },
+                        scale: 0.3,
+                      })
+                    }
+                  >
+                    Top C
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, {
+                        position: { x: 90, y: 10 },
+                        scale: 0.3,
+                      })
+                    }
+                  >
+                    Top R
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, {
+                        position: { x: 10, y: 80 },
+                        scale: 0.3,
+                      })
+                    }
+                  >
+                    Bot L
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, {
+                        position: { x: 50, y: 50 },
+                        scale: 1,
+                      })
+                    }
+                  >
+                    Center
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, {
+                        position: { x: 90, y: 80 },
+                        scale: 0.3,
+                      })
+                    }
+                  >
+                    Bot R
+                  </Button>
+                </div>
+              </div>
+
+              {/* Layer (Z-Index) */}
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span>Layer (Z-Index)</span>
+                  <span className="text-muted-foreground">
+                    {selectedScene.layer || 0}
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="10"
+                  value={selectedScene.layer || 0}
+                  onChange={(e) =>
+                    updateScene(selectedScene.id, {
+                      layer: parseInt(e.target.value),
+                    })
+                  }
+                  className="w-full"
+                />
+              </div>
+
+              {/* Position X */}
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span>Position X</span>
+                  <span className="text-muted-foreground">
+                    {selectedScene.position?.x || 50}%
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={selectedScene.position?.x || 50}
+                  onChange={(e) =>
+                    updateScene(selectedScene.id, {
+                      position: {
+                        x: parseInt(e.target.value),
+                        y: selectedScene.position?.y || 50,
+                      },
+                    })
+                  }
+                  className="w-full"
+                />
+              </div>
+
+              {/* Position Y */}
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span>Position Y</span>
+                  <span className="text-muted-foreground">
+                    {selectedScene.position?.y || 50}%
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={selectedScene.position?.y || 50}
+                  onChange={(e) =>
+                    updateScene(selectedScene.id, {
+                      position: {
+                        x: selectedScene.position?.x || 50,
+                        y: parseInt(e.target.value),
+                      },
+                    })
+                  }
+                  className="w-full"
+                />
+              </div>
+
+              {/* Scale */}
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span>Scale</span>
+                  <span className="text-muted-foreground">
+                    {((selectedScene.scale || 1) * 100).toFixed(0)}%
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="10"
+                  max="200"
+                  value={(selectedScene.scale || 1) * 100}
+                  onChange={(e) =>
+                    updateScene(selectedScene.id, {
+                      scale: parseInt(e.target.value) / 100,
+                    })
+                  }
+                  className="w-full"
+                />
+              </div>
+
+              {/* Opacity */}
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span>Opacity</span>
+                  <span className="text-muted-foreground">
+                    {((selectedScene.opacity || 1) * 100).toFixed(0)}%
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={(selectedScene.opacity || 1) * 100}
+                  onChange={(e) =>
+                    updateScene(selectedScene.id, {
+                      opacity: parseInt(e.target.value) / 100,
+                    })
+                  }
+                  className="w-full"
+                />
+              </div>
+
+              {/* Blend Mode */}
+              <div>
+                <div className="text-xs mb-1">Blend Mode</div>
+                <select
+                  value={selectedScene.blendMode || 'normal'}
+                  onChange={(e) =>
+                    updateScene(selectedScene.id, {
+                      blendMode: e.target.value as any,
+                    })
+                  }
+                  className="w-full px-3 py-2 text-sm border rounded-md bg-background"
+                >
+                  <option value="normal">Normal</option>
+                  <option value="multiply">Multiply</option>
+                  <option value="screen">Screen</option>
+                  <option value="overlay">Overlay</option>
+                </select>
+              </div>
+
+              {/* Reset Position Button */}
+              {(selectedScene.position || selectedScene.scale !== 1 || selectedScene.opacity !== 1) && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  onClick={() =>
+                    updateScene(selectedScene.id, {
+                      position: undefined,
+                      scale: 1,
+                      opacity: 1,
+                      layer: 0,
+                      blendMode: 'normal',
+                    })
+                  }
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Reset Layer
+                </Button>
+              )}
+            </div>
           </div>
 
           {/* Filters */}
@@ -312,8 +654,165 @@ export function ScenePropertiesPanel() {
             )}
           </div>
 
+          {/* Text Animation - Only for text scenes */}
+          {selectedScene.type === 'text' && (
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-2 block flex items-center gap-2">
+                <Type className="w-3 h-3" />
+                TEXT ANIMATION
+              </label>
+
+              <div className="space-y-3">
+                {/* Animation Type */}
+                <div>
+                  <div className="text-xs mb-1">Animation Type</div>
+                  <select
+                    value={selectedScene.textAnimation?.type || 'none'}
+                    onChange={(e) => {
+                      if (e.target.value === 'none') {
+                        updateScene(selectedScene.id, { textAnimation: undefined });
+                      } else {
+                        updateScene(selectedScene.id, {
+                          textAnimation: {
+                            type: e.target.value as any,
+                            duration: 1,
+                            delay: 0,
+                          },
+                        });
+                      }
+                    }}
+                    className="w-full px-3 py-2 text-sm border rounded-md bg-background"
+                  >
+                    <option value="none">None</option>
+                    <option value="fadeIn">Fade In</option>
+                    <option value="slideIn">Slide In</option>
+                    <option value="bounce">Bounce</option>
+                    <option value="typewriter">Typewriter</option>
+                    <option value="zoom">Zoom In</option>
+                    <option value="rotate">Rotate In</option>
+                  </select>
+                </div>
+
+                {selectedScene.textAnimation && selectedScene.textAnimation.type !== 'none' && (
+                  <>
+                    {/* Animation Duration */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>Animation Duration</span>
+                        <span className="text-muted-foreground">
+                          {selectedScene.textAnimation.duration}s
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0.1"
+                        max="3"
+                        step="0.1"
+                        value={selectedScene.textAnimation.duration}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            textAnimation: {
+                              ...selectedScene.textAnimation!,
+                              duration: parseFloat(e.target.value),
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Animation Delay */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>Animation Delay</span>
+                        <span className="text-muted-foreground">
+                          {selectedScene.textAnimation.delay}s
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="2"
+                        step="0.1"
+                        value={selectedScene.textAnimation.delay}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            textAnimation: {
+                              ...selectedScene.textAnimation!,
+                              delay: parseFloat(e.target.value),
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Direction for slideIn */}
+                    {selectedScene.textAnimation.type === 'slideIn' && (
+                      <div>
+                        <div className="text-xs mb-1">Slide Direction</div>
+                        <select
+                          value={selectedScene.textAnimation.direction || 'left'}
+                          onChange={(e) =>
+                            updateScene(selectedScene.id, {
+                              textAnimation: {
+                                ...selectedScene.textAnimation!,
+                                direction: e.target.value as any,
+                              },
+                            })
+                          }
+                          className="w-full px-3 py-2 text-sm border rounded-md bg-background"
+                        >
+                          <option value="left">From Left</option>
+                          <option value="right">From Right</option>
+                          <option value="up">From Top</option>
+                          <option value="down">From Bottom</option>
+                        </select>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Actions */}
           <div className="pt-4 border-t space-y-2">
+            {/* Split Scene */}
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-2 block">
+                SPLIT SCENE AT (seconds)
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="number"
+                  min="0.1"
+                  max={selectedScene.duration - 0.1}
+                  step="0.1"
+                  value={splitTime}
+                  onChange={(e) => setSplitTime(e.target.value)}
+                  placeholder={`0.1 - ${(selectedScene.duration - 0.1).toFixed(1)}`}
+                  className="flex-1 px-3 py-2 text-sm border rounded-md bg-background"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const time = parseFloat(splitTime);
+                    if (time > 0 && time < selectedScene.duration) {
+                      splitScene(selectedScene.id, time);
+                      setSplitTime('');
+                    } else {
+                      alert(`Split time must be between 0.1 and ${(selectedScene.duration - 0.1).toFixed(1)} seconds`);
+                    }
+                  }}
+                  disabled={!splitTime}
+                >
+                  <Scissors className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+
             <Button
               variant="outline"
               size="sm"

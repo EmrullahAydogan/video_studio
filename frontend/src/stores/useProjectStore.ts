@@ -22,6 +22,7 @@ interface ProjectStore {
   deleteScene: (id: string) => void;
   reorderScenes: (sceneIds: string[]) => void;
   duplicateScene: (id: string) => void;
+  splitScene: (id: string, splitTime: number) => void;
 
   // Audio actions
   addAudioTrack: (track: Omit<AudioTrack, 'id'>) => void;
@@ -33,6 +34,9 @@ interface ProjectStore {
   setIsPlaying: (isPlaying: boolean) => void;
   setZoom: (zoom: number) => void;
   setSelectedScene: (id: string | null) => void;
+  setPlaybackSpeed: (speed: number) => void;
+  setLoop: (loop: boolean) => void;
+  setVolume: (volume: number) => void;
 
   // Utility
   getTotalDuration: () => number;
@@ -46,6 +50,9 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
     currentTime: 0,
     isPlaying: false,
     selectedSceneId: null,
+    playbackSpeed: 1,
+    loop: false,
+    volume: 1,
   },
 
   createProject: (name: string) => {
@@ -199,6 +206,54 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
     });
   },
 
+  splitScene: (id, splitTime) => {
+    const project = get().project;
+    if (!project) return;
+
+    const sceneIndex = project.scenes.findIndex((s) => s.id === id);
+    if (sceneIndex === -1) return;
+
+    const sceneToSplit = project.scenes[sceneIndex];
+    if (splitTime <= 0 || splitTime >= sceneToSplit.duration) return;
+
+    // Create first part (before split)
+    const firstPart: Scene = {
+      ...sceneToSplit,
+      id: crypto.randomUUID(),
+      duration: splitTime,
+      name: `${sceneToSplit.name} (Part 1)`,
+      trimEnd: (sceneToSplit.trimEnd || 0) + (sceneToSplit.duration - splitTime),
+    };
+
+    // Create second part (after split)
+    const secondPart: Scene = {
+      ...sceneToSplit,
+      id: crypto.randomUUID(),
+      duration: sceneToSplit.duration - splitTime,
+      startTime: sceneToSplit.startTime + splitTime,
+      name: `${sceneToSplit.name} (Part 2)`,
+      trimStart: (sceneToSplit.trimStart || 0) + splitTime,
+    };
+
+    // Replace original scene with two new scenes
+    const newScenes = [...project.scenes];
+    newScenes.splice(sceneIndex, 1, firstPart, secondPart);
+
+    const updatedProject = {
+      ...project,
+      scenes: newScenes,
+      updatedAt: new Date(),
+    };
+
+    set({
+      project: updatedProject,
+      hasUnsavedChanges: true,
+    });
+
+    // Auto-save
+    projectStorage.saveProject(updatedProject);
+  },
+
   addAudioTrack: (trackData) => {
     const project = get().project;
     if (!project) return;
@@ -284,6 +339,24 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
   setSelectedScene: (id) => {
     set((state) => ({
       timeline: { ...state.timeline, selectedSceneId: id },
+    }));
+  },
+
+  setPlaybackSpeed: (speed) => {
+    set((state) => ({
+      timeline: { ...state.timeline, playbackSpeed: speed },
+    }));
+  },
+
+  setLoop: (loop) => {
+    set((state) => ({
+      timeline: { ...state.timeline, loop },
+    }));
+  },
+
+  setVolume: (volume) => {
+    set((state) => ({
+      timeline: { ...state.timeline, volume },
     }));
   },
 
