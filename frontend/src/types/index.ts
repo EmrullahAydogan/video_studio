@@ -48,6 +48,8 @@ export interface AudioTrack {
   startTime: number;
   duration: number;
   volume: number; // 0-1
+  fadeIn?: number; // fade in duration in seconds
+  fadeOut?: number; // fade out duration in seconds
 }
 
 export interface Project {

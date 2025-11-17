@@ -18,6 +18,7 @@ import {
 } from '@dnd-kit/sortable';
 import { useProjectStore } from '@/stores/useProjectStore';
 import { SceneCard } from './SceneCard';
+import { AudioTrackCard } from './AudioTrackCard';
 import { formatTime } from '@/lib/utils';
 import { Plus, ZoomIn, ZoomOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -32,6 +33,8 @@ export function Timeline() {
     setSelectedScene,
     setCurrentTime,
     setZoom,
+    deleteAudioTrack,
+    updateAudioTrack,
   } = useProjectStore();
 
   const timelineRef = useRef<HTMLDivElement>(null);
@@ -208,12 +211,32 @@ export function Timeline() {
           <div>
             <div className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-2">
               Audio Track
-              <Button size="sm" variant="ghost" className="h-6">
-                <Plus className="w-3 h-3" />
-              </Button>
             </div>
-            <div className="h-16 bg-secondary/50 rounded-lg border-2 border-dashed flex items-center justify-center text-xs text-muted-foreground">
-              Add audio track
+            <div className="flex gap-2 items-start">
+              {project.audioTracks.length === 0 ? (
+                <div className="h-16 px-4 flex items-center justify-center text-sm text-muted-foreground border-2 border-dashed rounded-lg">
+                  Add audio tracks from toolbar
+                </div>
+              ) : (
+                project.audioTracks.map((track) => (
+                  <AudioTrackCard
+                    key={track.id}
+                    track={track}
+                    isSelected={false}
+                    onSelect={() => {}}
+                    onDuplicate={() => {
+                      const newTrack = {
+                        ...track,
+                        id: crypto.randomUUID(),
+                        name: `${track.name} (Copy)`,
+                      };
+                      useProjectStore.getState().addAudioTrack(newTrack);
+                    }}
+                    onDelete={() => deleteAudioTrack(track.id)}
+                    zoom={timeline.zoom}
+                  />
+                ))
+              )}
             </div>
           </div>
         </div>

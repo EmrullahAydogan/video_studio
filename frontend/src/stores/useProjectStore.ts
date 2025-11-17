@@ -208,41 +208,59 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
       id: crypto.randomUUID(),
     };
 
+    const updatedProject = {
+      ...project,
+      audioTracks: [...project.audioTracks, newTrack],
+      updatedAt: new Date(),
+    };
+
     set({
-      project: {
-        ...project,
-        audioTracks: [...project.audioTracks, newTrack],
-        updatedAt: new Date(),
-      },
+      project: updatedProject,
+      hasUnsavedChanges: true,
     });
+
+    // Auto-save
+    projectStorage.saveProject(updatedProject);
   },
 
   updateAudioTrack: (id, updates) => {
     const project = get().project;
     if (!project) return;
 
+    const updatedProject = {
+      ...project,
+      audioTracks: project.audioTracks.map((track) =>
+        track.id === id ? { ...track, ...updates } : track
+      ),
+      updatedAt: new Date(),
+    };
+
     set({
-      project: {
-        ...project,
-        audioTracks: project.audioTracks.map((track) =>
-          track.id === id ? { ...track, ...updates } : track
-        ),
-        updatedAt: new Date(),
-      },
+      project: updatedProject,
+      hasUnsavedChanges: true,
     });
+
+    // Auto-save
+    projectStorage.saveProject(updatedProject);
   },
 
   deleteAudioTrack: (id) => {
     const project = get().project;
     if (!project) return;
 
+    const updatedProject = {
+      ...project,
+      audioTracks: project.audioTracks.filter((track) => track.id !== id),
+      updatedAt: new Date(),
+    };
+
     set({
-      project: {
-        ...project,
-        audioTracks: project.audioTracks.filter((track) => track.id !== id),
-        updatedAt: new Date(),
-      },
+      project: updatedProject,
+      hasUnsavedChanges: true,
     });
+
+    // Auto-save
+    projectStorage.saveProject(updatedProject);
   },
 
   setCurrentTime: (time) => {
