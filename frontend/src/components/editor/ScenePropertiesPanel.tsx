@@ -24,6 +24,9 @@ import {
   FlipHorizontal,
   FlipVertical,
   Crop,
+  Film,
+  ZoomIn,
+  Pipette,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -1146,6 +1149,609 @@ export function ScenePropertiesPanel() {
                     <X className="w-4 h-4 mr-2" />
                     Reset Transform
                   </Button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Ken Burns Effect - Only for image scenes */}
+          {selectedScene.type === 'image' && (
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-2 block flex items-center gap-2">
+                <Film className="w-3 h-3" />
+                KEN BURNS EFFECT
+              </label>
+
+              <div className="space-y-3">
+                {/* Enable Toggle */}
+                <div className="flex items-center justify-between p-3 border rounded-lg">
+                  <div>
+                    <div className="text-sm font-medium">Pan & Zoom Animation</div>
+                    <div className="text-xs text-muted-foreground">
+                      Animated camera movement over image
+                    </div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedScene.kenBurnsEffect?.enabled || false}
+                      onChange={(e) =>
+                        updateScene(selectedScene.id, {
+                          kenBurnsEffect: e.target.checked
+                            ? {
+                                enabled: true,
+                                startPosition: { x: 0, y: 0 },
+                                endPosition: { x: 20, y: 20 },
+                                startScale: 1.2,
+                                endScale: 1,
+                                easing: 'ease-in-out',
+                              }
+                            : undefined,
+                        })
+                      }
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                  </label>
+                </div>
+
+                {selectedScene.kenBurnsEffect?.enabled && (
+                  <>
+                    {/* Start Position */}
+                    <div>
+                      <div className="text-xs mb-2 font-medium">Start Position</div>
+                      <div className="space-y-2">
+                        <div>
+                          <div className="flex justify-between text-xs mb-1">
+                            <span>X Offset</span>
+                            <span className="text-muted-foreground">
+                              {selectedScene.kenBurnsEffect.startPosition.x}%
+                            </span>
+                          </div>
+                          <input
+                            type="range"
+                            min="-50"
+                            max="50"
+                            value={selectedScene.kenBurnsEffect.startPosition.x}
+                            onChange={(e) =>
+                              updateScene(selectedScene.id, {
+                                kenBurnsEffect: {
+                                  ...selectedScene.kenBurnsEffect!,
+                                  startPosition: {
+                                    x: parseInt(e.target.value),
+                                    y: selectedScene.kenBurnsEffect!.startPosition.y,
+                                  },
+                                },
+                              })
+                            }
+                            className="w-full"
+                          />
+                        </div>
+                        <div>
+                          <div className="flex justify-between text-xs mb-1">
+                            <span>Y Offset</span>
+                            <span className="text-muted-foreground">
+                              {selectedScene.kenBurnsEffect.startPosition.y}%
+                            </span>
+                          </div>
+                          <input
+                            type="range"
+                            min="-50"
+                            max="50"
+                            value={selectedScene.kenBurnsEffect.startPosition.y}
+                            onChange={(e) =>
+                              updateScene(selectedScene.id, {
+                                kenBurnsEffect: {
+                                  ...selectedScene.kenBurnsEffect!,
+                                  startPosition: {
+                                    x: selectedScene.kenBurnsEffect!.startPosition.x,
+                                    y: parseInt(e.target.value),
+                                  },
+                                },
+                              })
+                            }
+                            className="w-full"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* End Position */}
+                    <div>
+                      <div className="text-xs mb-2 font-medium">End Position</div>
+                      <div className="space-y-2">
+                        <div>
+                          <div className="flex justify-between text-xs mb-1">
+                            <span>X Offset</span>
+                            <span className="text-muted-foreground">
+                              {selectedScene.kenBurnsEffect.endPosition.x}%
+                            </span>
+                          </div>
+                          <input
+                            type="range"
+                            min="-50"
+                            max="50"
+                            value={selectedScene.kenBurnsEffect.endPosition.x}
+                            onChange={(e) =>
+                              updateScene(selectedScene.id, {
+                                kenBurnsEffect: {
+                                  ...selectedScene.kenBurnsEffect!,
+                                  endPosition: {
+                                    x: parseInt(e.target.value),
+                                    y: selectedScene.kenBurnsEffect!.endPosition.y,
+                                  },
+                                },
+                              })
+                            }
+                            className="w-full"
+                          />
+                        </div>
+                        <div>
+                          <div className="flex justify-between text-xs mb-1">
+                            <span>Y Offset</span>
+                            <span className="text-muted-foreground">
+                              {selectedScene.kenBurnsEffect.endPosition.y}%
+                            </span>
+                          </div>
+                          <input
+                            type="range"
+                            min="-50"
+                            max="50"
+                            value={selectedScene.kenBurnsEffect.endPosition.y}
+                            onChange={(e) =>
+                              updateScene(selectedScene.id, {
+                                kenBurnsEffect: {
+                                  ...selectedScene.kenBurnsEffect!,
+                                  endPosition: {
+                                    x: selectedScene.kenBurnsEffect!.endPosition.x,
+                                    y: parseInt(e.target.value),
+                                  },
+                                },
+                              })
+                            }
+                            className="w-full"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Start Scale */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>Start Zoom</span>
+                        <span className="text-muted-foreground">
+                          {(selectedScene.kenBurnsEffect.startScale * 100).toFixed(0)}%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="100"
+                        max="200"
+                        step="5"
+                        value={selectedScene.kenBurnsEffect.startScale * 100}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            kenBurnsEffect: {
+                              ...selectedScene.kenBurnsEffect!,
+                              startScale: parseInt(e.target.value) / 100,
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* End Scale */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>End Zoom</span>
+                        <span className="text-muted-foreground">
+                          {(selectedScene.kenBurnsEffect.endScale * 100).toFixed(0)}%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="100"
+                        max="200"
+                        step="5"
+                        value={selectedScene.kenBurnsEffect.endScale * 100}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            kenBurnsEffect: {
+                              ...selectedScene.kenBurnsEffect!,
+                              endScale: parseInt(e.target.value) / 100,
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Easing */}
+                    <div>
+                      <div className="text-xs mb-1">Animation Easing</div>
+                      <select
+                        value={selectedScene.kenBurnsEffect.easing || 'ease-in-out'}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            kenBurnsEffect: {
+                              ...selectedScene.kenBurnsEffect!,
+                              easing: e.target.value as any,
+                            },
+                          })
+                        }
+                        className="w-full px-3 py-2 text-sm border rounded-md bg-background"
+                      >
+                        <option value="linear">Linear</option>
+                        <option value="ease-in">Ease In</option>
+                        <option value="ease-out">Ease Out</option>
+                        <option value="ease-in-out">Ease In-Out</option>
+                      </select>
+                    </div>
+
+                    {/* Quick Presets */}
+                    <div>
+                      <div className="text-xs mb-2">Quick Presets</div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-auto py-2 px-3 flex flex-col items-start"
+                          onClick={() =>
+                            updateScene(selectedScene.id, {
+                              kenBurnsEffect: {
+                                enabled: true,
+                                startPosition: { x: 0, y: 0 },
+                                endPosition: { x: 20, y: 20 },
+                                startScale: 1.2,
+                                endScale: 1,
+                                easing: 'ease-in-out',
+                              },
+                            })
+                          }
+                        >
+                          <span className="text-xs font-medium">Zoom Out</span>
+                          <span className="text-[10px] text-muted-foreground">
+                            Start close, end wide
+                          </span>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-auto py-2 px-3 flex flex-col items-start"
+                          onClick={() =>
+                            updateScene(selectedScene.id, {
+                              kenBurnsEffect: {
+                                enabled: true,
+                                startPosition: { x: 0, y: 0 },
+                                endPosition: { x: -20, y: -20 },
+                                startScale: 1,
+                                endScale: 1.4,
+                                easing: 'ease-in-out',
+                              },
+                            })
+                          }
+                        >
+                          <span className="text-xs font-medium">Zoom In</span>
+                          <span className="text-[10px] text-muted-foreground">
+                            Start wide, end close
+                          </span>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-auto py-2 px-3 flex flex-col items-start"
+                          onClick={() =>
+                            updateScene(selectedScene.id, {
+                              kenBurnsEffect: {
+                                enabled: true,
+                                startPosition: { x: -20, y: 0 },
+                                endPosition: { x: 20, y: 0 },
+                                startScale: 1.1,
+                                endScale: 1.1,
+                                easing: 'linear',
+                              },
+                            })
+                          }
+                        >
+                          <span className="text-xs font-medium">Pan Right</span>
+                          <span className="text-[10px] text-muted-foreground">
+                            Left to right pan
+                          </span>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-auto py-2 px-3 flex flex-col items-start"
+                          onClick={() =>
+                            updateScene(selectedScene.id, {
+                              kenBurnsEffect: {
+                                enabled: true,
+                                startPosition: { x: 0, y: -20 },
+                                endPosition: { x: 0, y: 20 },
+                                startScale: 1.1,
+                                endScale: 1.1,
+                                easing: 'linear',
+                              },
+                            })
+                          }
+                        >
+                          <span className="text-xs font-medium">Pan Down</span>
+                          <span className="text-[10px] text-muted-foreground">
+                            Top to bottom pan
+                          </span>
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Info Message */}
+                    <div className="text-xs bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                      <div className="font-medium text-blue-900 dark:text-blue-100 mb-1">
+                        💡 Ken Burns Effect
+                      </div>
+                      <div className="text-blue-700 dark:text-blue-300">
+                        Creates a documentary-style pan and zoom animation over your still image,
+                        adding dynamic movement to static photos.
+                      </div>
+                    </div>
+
+                    {/* Reset Button */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      onClick={() =>
+                        updateScene(selectedScene.id, {
+                          kenBurnsEffect: undefined,
+                        })
+                      }
+                    >
+                      <X className="w-4 h-4 mr-2" />
+                      Disable Ken Burns Effect
+                    </Button>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Chroma Key - Only for video and image scenes */}
+          {(selectedScene.type === 'video' || selectedScene.type === 'image') && (
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-2 block flex items-center gap-2">
+                <Pipette className="w-3 h-3" />
+                CHROMA KEY (GREEN SCREEN)
+              </label>
+
+              <div className="space-y-3">
+                {/* Enable Toggle */}
+                <div className="flex items-center justify-between p-3 border rounded-lg">
+                  <div>
+                    <div className="text-sm font-medium">Remove Color Background</div>
+                    <div className="text-xs text-muted-foreground">
+                      Remove green screen or any solid color
+                    </div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedScene.chromaKey?.enabled || false}
+                      onChange={(e) =>
+                        updateScene(selectedScene.id, {
+                          chromaKey: e.target.checked
+                            ? {
+                                enabled: true,
+                                targetColor: '#00FF00',
+                                tolerance: 30,
+                                feathering: 10,
+                                spill: 20,
+                              }
+                            : undefined,
+                        })
+                      }
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                  </label>
+                </div>
+
+                {selectedScene.chromaKey?.enabled && (
+                  <>
+                    {/* Target Color */}
+                    <div>
+                      <div className="text-xs mb-2 font-medium">Target Color</div>
+                      <div className="flex gap-2 items-center">
+                        <input
+                          type="color"
+                          value={selectedScene.chromaKey.targetColor}
+                          onChange={(e) =>
+                            updateScene(selectedScene.id, {
+                              chromaKey: {
+                                ...selectedScene.chromaKey!,
+                                targetColor: e.target.value,
+                              },
+                            })
+                          }
+                          className="w-12 h-8 border rounded cursor-pointer"
+                        />
+                        <input
+                          type="text"
+                          value={selectedScene.chromaKey.targetColor}
+                          onChange={(e) =>
+                            updateScene(selectedScene.id, {
+                              chromaKey: {
+                                ...selectedScene.chromaKey!,
+                                targetColor: e.target.value,
+                              },
+                            })
+                          }
+                          placeholder="#00FF00"
+                          className="flex-1 px-3 py-2 text-sm border rounded-md bg-background"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Color Presets */}
+                    <div>
+                      <div className="text-xs mb-2">Quick Color Presets</div>
+                      <div className="grid grid-cols-3 gap-2">
+                        <button
+                          onClick={() =>
+                            updateScene(selectedScene.id, {
+                              chromaKey: {
+                                ...selectedScene.chromaKey!,
+                                targetColor: '#00FF00',
+                              },
+                            })
+                          }
+                          className="px-3 py-2 border rounded-md text-xs font-medium hover:bg-accent flex items-center justify-center gap-2"
+                        >
+                          <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#00FF00' }} />
+                          Green
+                        </button>
+                        <button
+                          onClick={() =>
+                            updateScene(selectedScene.id, {
+                              chromaKey: {
+                                ...selectedScene.chromaKey!,
+                                targetColor: '#0000FF',
+                              },
+                            })
+                          }
+                          className="px-3 py-2 border rounded-md text-xs font-medium hover:bg-accent flex items-center justify-center gap-2"
+                        >
+                          <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#0000FF' }} />
+                          Blue
+                        </button>
+                        <button
+                          onClick={() =>
+                            updateScene(selectedScene.id, {
+                              chromaKey: {
+                                ...selectedScene.chromaKey!,
+                                targetColor: '#FF00FF',
+                              },
+                            })
+                          }
+                          className="px-3 py-2 border rounded-md text-xs font-medium hover:bg-accent flex items-center justify-center gap-2"
+                        >
+                          <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#FF00FF' }} />
+                          Magenta
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Tolerance */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>Tolerance</span>
+                        <span className="text-muted-foreground">
+                          {selectedScene.chromaKey.tolerance}%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={selectedScene.chromaKey.tolerance}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            chromaKey: {
+                              ...selectedScene.chromaKey!,
+                              tolerance: parseInt(e.target.value),
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                      <div className="text-xs text-muted-foreground mt-1">
+                        How much color variation to remove
+                      </div>
+                    </div>
+
+                    {/* Feathering */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>Edge Feathering</span>
+                        <span className="text-muted-foreground">
+                          {selectedScene.chromaKey.feathering}%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={selectedScene.chromaKey.feathering}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            chromaKey: {
+                              ...selectedScene.chromaKey!,
+                              feathering: parseInt(e.target.value),
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                      <div className="text-xs text-muted-foreground mt-1">
+                        Edge smoothing for better blending
+                      </div>
+                    </div>
+
+                    {/* Spill Suppression */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>Spill Suppression</span>
+                        <span className="text-muted-foreground">
+                          {selectedScene.chromaKey.spill}%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={selectedScene.chromaKey.spill}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            chromaKey: {
+                              ...selectedScene.chromaKey!,
+                              spill: parseInt(e.target.value),
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                      <div className="text-xs text-muted-foreground mt-1">
+                        Reduce color spill on subject edges
+                      </div>
+                    </div>
+
+                    {/* Info Message */}
+                    <div className="text-xs bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-3">
+                      <div className="font-medium text-green-900 dark:text-green-100 mb-1">
+                        🎬 Chroma Key Tips
+                      </div>
+                      <div className="text-green-700 dark:text-green-300 space-y-1">
+                        <div>• Use even, bright lighting on green screen</div>
+                        <div>• Adjust tolerance for color range</div>
+                        <div>• Increase feathering for softer edges</div>
+                        <div>• Use spill suppression for green color bleed</div>
+                      </div>
+                    </div>
+
+                    {/* Reset Button */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      onClick={() =>
+                        updateScene(selectedScene.id, {
+                          chromaKey: undefined,
+                        })
+                      }
+                    >
+                      <X className="w-4 h-4 mr-2" />
+                      Disable Chroma Key
+                    </Button>
+                  </>
                 )}
               </div>
             </div>

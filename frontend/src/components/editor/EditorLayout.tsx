@@ -23,9 +23,14 @@ export function EditorLayout() {
     setLoop,
     setVolume,
     setPlaybackSpeed,
+    setSnappingEnabled,
     saveProject,
     deleteScene,
     duplicateScene,
+    undo,
+    redo,
+    copyScene,
+    pasteScene,
   } = useProjectStore();
   const [showShortcutsHelp, setShowShortcutsHelp] = useState(false);
 
@@ -170,6 +175,11 @@ export function EditorLayout() {
       description: 'Reset zoom',
       handler: () => setZoom(50),
     },
+    {
+      key: 's',
+      description: 'Toggle snapping',
+      handler: () => setSnappingEnabled(!timeline.snappingEnabled),
+    },
     // Editing
     {
       key: 'Delete',
@@ -189,6 +199,44 @@ export function EditorLayout() {
           e.preventDefault();
           duplicateScene(timeline.selectedSceneId);
         }
+      },
+    },
+    {
+      key: 'c',
+      ctrl: true,
+      description: 'Copy scene',
+      handler: (e) => {
+        if (timeline.selectedSceneId) {
+          e.preventDefault();
+          copyScene(timeline.selectedSceneId);
+        }
+      },
+    },
+    {
+      key: 'v',
+      ctrl: true,
+      description: 'Paste scene',
+      handler: (e) => {
+        e.preventDefault();
+        pasteScene();
+      },
+    },
+    {
+      key: 'z',
+      ctrl: true,
+      description: 'Undo',
+      handler: (e) => {
+        e.preventDefault();
+        undo();
+      },
+    },
+    {
+      key: 'y',
+      ctrl: true,
+      description: 'Redo',
+      handler: (e) => {
+        e.preventDefault();
+        redo();
       },
     },
     // Project

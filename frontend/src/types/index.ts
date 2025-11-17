@@ -71,6 +71,25 @@ export interface Scene {
       left: number;
     };
   };
+
+  // Ken Burns Effect (for images)
+  kenBurnsEffect?: {
+    enabled: boolean;
+    startPosition: { x: number; y: number }; // percentage (0-100)
+    endPosition: { x: number; y: number }; // percentage (0-100)
+    startScale: number; // 1.0 = 100%, 1.5 = 150%, etc.
+    endScale: number;
+    easing?: 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out';
+  };
+
+  // Chroma Key (Green Screen Removal)
+  chromaKey?: {
+    enabled: boolean;
+    targetColor: string; // hex color (e.g., '#00FF00' for green)
+    tolerance: number; // 0-100, how much color variation to remove
+    feathering: number; // 0-100, edge smoothing
+    spill: number; // 0-100, spill suppression
+  };
 }
 
 export interface Filter {
@@ -147,4 +166,6 @@ export interface TimelineState {
   playbackSpeed: number; // 0.25, 0.5, 1, 1.5, 2
   loop: boolean;
   volume: number; // 0-1
+  snappingEnabled: boolean; // whether timeline snapping is enabled
+  snapThreshold: number; // pixel distance for snapping (default 10px)
 }

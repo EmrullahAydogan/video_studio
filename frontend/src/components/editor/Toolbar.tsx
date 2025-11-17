@@ -16,6 +16,7 @@ import {
   Palette,
   Smile,
   Bookmark,
+  FileText,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ExportDialog } from './ExportDialog';
@@ -25,10 +26,11 @@ import { AudioUploadDialog } from './AudioUploadDialog';
 import { PresetsDialog } from './PresetsDialog';
 import { StickersDialog } from './StickersDialog';
 import { MarkersDialog } from './MarkersDialog';
+import { TemplateLibrary } from './TemplateLibrary';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
 export function Toolbar() {
-  const { project, saveProject, hasUnsavedChanges } = useProjectStore();
+  const { project, saveProject, hasUnsavedChanges, undo, redo, canUndo, canRedo } = useProjectStore();
   const [showExportDialog, setShowExportDialog] = useState(false);
   const [showProjectManager, setShowProjectManager] = useState(false);
   const [showTextOverlay, setShowTextOverlay] = useState(false);
@@ -36,6 +38,7 @@ export function Toolbar() {
   const [showPresets, setShowPresets] = useState(false);
   const [showStickers, setShowStickers] = useState(false);
   const [showMarkers, setShowMarkers] = useState(false);
+  const [showTemplateLibrary, setShowTemplateLibrary] = useState(false);
 
   return (
     <>
@@ -67,6 +70,10 @@ export function Toolbar() {
         isOpen={showMarkers}
         onClose={() => setShowMarkers(false)}
       />
+      <TemplateLibrary
+        isOpen={showTemplateLibrary}
+        onClose={() => setShowTemplateLibrary(false)}
+      />
     <div className="h-14 border-b bg-card flex items-center justify-between px-4">
       {/* Left - Logo and Project Name */}
       <div className="flex items-center gap-4">
@@ -84,10 +91,22 @@ export function Toolbar() {
 
       {/* Center - Actions */}
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" disabled>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={undo}
+          disabled={!canUndo()}
+          title="Undo (Ctrl+Z)"
+        >
           <Undo className="w-4 h-4" />
         </Button>
-        <Button variant="ghost" size="sm" disabled>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={redo}
+          disabled={!canRedo()}
+          title="Redo (Ctrl+Y)"
+        >
           <Redo className="w-4 h-4" />
         </Button>
 
@@ -100,6 +119,15 @@ export function Toolbar() {
         >
           <FolderOpen className="w-4 h-4 mr-2" />
           Projects
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setShowTemplateLibrary(true)}
+        >
+          <FileText className="w-4 h-4 mr-2" />
+          Templates
         </Button>
 
         <Button
