@@ -1,9 +1,11 @@
 import { create } from 'zustand';
 import { Scene, AudioTrack, Project, TimelineState } from '@/types';
+import { projectStorage } from '@/lib/projectStorage';
 
 interface ProjectStore {
   // Project data
   project: Project | null;
+  hasUnsavedChanges: boolean;
 
   // Timeline state
   timeline: TimelineState;
@@ -11,6 +13,8 @@ interface ProjectStore {
   // Actions
   createProject: (name: string) => void;
   loadProject: (project: Project) => void;
+  saveProject: () => void;
+  updateProjectName: (name: string) => void;
 
   // Scene actions
   addScene: (scene: Omit<Scene, 'id'>) => void;
@@ -36,6 +40,7 @@ interface ProjectStore {
 
 export const useProjectStore = create<ProjectStore>((set, get) => ({
   project: null,
+  hasUnsavedChanges: false,
   timeline: {
     zoom: 50, // 50 pixels per second
     currentTime: 0,
@@ -55,11 +60,31 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    set({ project: newProject });
+    set({ project: newProject, hasUnsavedChanges: false });
+    projectStorage.saveProject(newProject);
   },
 
   loadProject: (project: Project) => {
-    set({ project });
+    set({ project, hasUnsavedChanges: false });
+  },
+
+  saveProject: () => {
+    const project = get().project;
+    if (!project) return;
+
+    project.updatedAt = new Date();
+    projectStorage.saveProject(project);
+    set({ hasUnsavedChanges: false });
+  },
+
+  updateProjectName: (name: string) => {
+    const project = get().project;
+    if (!project) return;
+
+    set({
+      project: { ...project, name, updatedAt: new Date() },
+      hasUnsavedChanges: true,
+    });
   },
 
   addScene: (sceneData) => {
@@ -71,41 +96,59 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
       id: crypto.randomUUID(),
     };
 
+    const updatedProject = {
+      ...project,
+      scenes: [...project.scenes, newScene],
+      updatedAt: new Date(),
+    };
+
     set({
-      project: {
-        ...project,
-        scenes: [...project.scenes, newScene],
-        updatedAt: new Date(),
-      },
+      project: updatedProject,
+      hasUnsavedChanges: true,
     });
+
+    // Auto-save
+    projectStorage.saveProject(updatedProject);
   },
 
   updateScene: (id, updates) => {
     const project = get().project;
     if (!project) return;
 
+    const updatedProject = {
+      ...project,
+      scenes: project.scenes.map((scene) =>
+        scene.id === id ? { ...scene, ...updates } : scene
+      ),
+      updatedAt: new Date(),
+    };
+
     set({
-      project: {
-        ...project,
-        scenes: project.scenes.map((scene) =>
-          scene.id === id ? { ...scene, ...updates } : scene
-        ),
-        updatedAt: new Date(),
-      },
+      project: updatedProject,
+      hasUnsavedChanges: true,
     });
+
+    // Auto-save
+    projectStorage.saveProject(updatedProject);
   },
 
   deleteScene: (id) => {
     const project = get().project;
     if (!project) return;
 
+    const updatedProject = {
+      ...project,
+      scenes: project.scenes.filter((scene) => scene.id !== id),
+      updatedAt: new Date(),
+    };
+
     set({
-      project: {
-        ...project,
-        scenes: project.scenes.filter((scene) => scene.id !== id),
-        updatedAt: new Date(),
-      },
+      project: updatedProject,
+      hasUnsavedChanges: true,
     });
+
+    // Auto-save
+    projectStorage.saveProject(updatedProject);
   },
 
   reorderScenes: (sceneIds) => {

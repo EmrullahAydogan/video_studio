@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useProjectStore } from '@/stores/useProjectStore';
+import { projectStorage } from '@/lib/projectStorage';
 import { VideoPreview } from './VideoPreview';
 import { Timeline } from '../timeline/Timeline';
 import { AIPanel } from '../ai/AIPanel';
@@ -9,14 +10,25 @@ import { Toolbar } from './Toolbar';
 import { AssetPanel } from './AssetPanel';
 
 export function EditorLayout() {
-  const { project, createProject } = useProjectStore();
+  const { project, createProject, loadProject } = useProjectStore();
 
   useEffect(() => {
-    // Create a default project if none exists
+    // Try to load the last opened project or create a new one
     if (!project) {
+      const currentProjectId = projectStorage.getCurrentProjectId();
+
+      if (currentProjectId) {
+        const loadedProject = projectStorage.loadProject(currentProjectId);
+        if (loadedProject) {
+          loadProject(loadedProject);
+          return;
+        }
+      }
+
+      // If no project found, create a default one
       createProject('Untitled Project');
     }
-  }, [project, createProject]);
+  }, [project, createProject, loadProject]);
 
   return (
     <div className="h-screen flex flex-col bg-background">

@@ -10,19 +10,26 @@ import {
   Redo,
   Settings,
   Film,
+  FolderOpen,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ExportDialog } from './ExportDialog';
+import { ProjectManager } from './ProjectManager';
 
 export function Toolbar() {
-  const { project } = useProjectStore();
+  const { project, saveProject, hasUnsavedChanges } = useProjectStore();
   const [showExportDialog, setShowExportDialog] = useState(false);
+  const [showProjectManager, setShowProjectManager] = useState(false);
 
   return (
     <>
       <ExportDialog
         isOpen={showExportDialog}
         onClose={() => setShowExportDialog(false)}
+      />
+      <ProjectManager
+        isOpen={showProjectManager}
+        onClose={() => setShowProjectManager(false)}
       />
     <div className="h-14 border-b bg-card flex items-center justify-between px-4">
       {/* Left - Logo and Project Name */}
@@ -50,14 +57,23 @@ export function Toolbar() {
 
         <div className="h-6 w-px bg-border mx-2" />
 
-        <Button variant="outline" size="sm">
-          <Upload className="w-4 h-4 mr-2" />
-          Import
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setShowProjectManager(true)}
+        >
+          <FolderOpen className="w-4 h-4 mr-2" />
+          Projects
         </Button>
 
-        <Button variant="outline" size="sm">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={saveProject}
+          className={hasUnsavedChanges ? 'border-orange-500' : ''}
+        >
           <Save className="w-4 h-4 mr-2" />
-          Save
+          Save{hasUnsavedChanges && '*'}
         </Button>
 
         <Button size="sm" onClick={() => setShowExportDialog(true)}>
