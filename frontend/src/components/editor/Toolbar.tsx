@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useProjectStore } from '@/stores/useProjectStore';
 import {
   Save,
@@ -11,11 +12,18 @@ import {
   Film,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ExportDialog } from './ExportDialog';
 
 export function Toolbar() {
   const { project } = useProjectStore();
+  const [showExportDialog, setShowExportDialog] = useState(false);
 
   return (
+    <>
+      <ExportDialog
+        isOpen={showExportDialog}
+        onClose={() => setShowExportDialog(false)}
+      />
     <div className="h-14 border-b bg-card flex items-center justify-between px-4">
       {/* Left - Logo and Project Name */}
       <div className="flex items-center gap-4">
@@ -52,7 +60,7 @@ export function Toolbar() {
           Save
         </Button>
 
-        <Button size="sm">
+        <Button size="sm" onClick={() => setShowExportDialog(true)}>
           <Download className="w-4 h-4 mr-2" />
           Export
         </Button>
@@ -65,5 +73,6 @@ export function Toolbar() {
         </Button>
       </div>
     </div>
+    </>
   );
 }

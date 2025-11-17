@@ -358,12 +358,15 @@ npm run build
 - [x] Video preview
 - [x] AI panel
 
-### Phase 2 - Advanced Features 🚧
-- [ ] Real AI integrations (OpenAI, Runway)
-- [ ] FFmpeg video processing
-- [ ] Video export/render
-- [ ] Undo/Redo system
-- [ ] Keyboard shortcuts
+### Phase 2 - Advanced Features ✅
+- [x] Real AI integrations (OpenAI DALL-E for images)
+- [x] Improved video upload with duration detection
+- [x] Video export/render dialog with quality settings
+- [x] Undo/Redo system (useUndoRedo hook)
+- [x] Keyboard shortcuts system
+- [x] Automatic thumbnail generation for videos
+- [x] API client for backend communication
+- [ ] FFmpeg video processing (backend integration needed)
 
 ### Phase 3 - Enhancement 📋
 - [ ] User accounts

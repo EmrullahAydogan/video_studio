@@ -38,20 +38,98 @@ export function AssetPanel() {
         // Create object URL for preview
         const src = URL.createObjectURL(file);
 
-        // For demo purposes, create a scene
-        // In production, you'd upload to server first
+        // Get video duration for videos
+        let duration = 5; // Default
+        if (isVideo) {
+          try {
+            duration = await getVideoDuration(file);
+          } catch (err) {
+            console.error('Failed to get video duration:', err);
+          }
+        }
+
+        // Generate thumbnail
+        let thumbnail: string | undefined;
+        try {
+          if (isVideo) {
+            thumbnail = await generateThumbnail(file);
+          } else {
+            thumbnail = src;
+          }
+        } catch (err) {
+          console.error('Failed to generate thumbnail:', err);
+        }
+
         addScene({
           type: isVideo ? 'video' : 'image',
           name: file.name,
-          duration: 5, // Default duration
+          duration,
           startTime: 0,
           src,
+          thumbnail,
         });
       }
     }
 
     // Reset input
     e.target.value = '';
+  };
+
+  const getVideoDuration = (file: File): Promise<number> => {
+    return new Promise((resolve, reject) => {
+      const video = document.createElement('video');
+      video.preload = 'metadata';
+
+      video.onloadedmetadata = () => {
+        resolve(video.duration);
+        URL.revokeObjectURL(video.src);
+      };
+
+      video.onerror = () => {
+        reject(new Error('Failed to load video'));
+        URL.revokeObjectURL(video.src);
+      };
+
+      video.src = URL.createObjectURL(file);
+    });
+  };
+
+  const generateThumbnail = async (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const video = document.createElement('video');
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      video.preload = 'metadata';
+      video.muted = true;
+      video.playsInline = true;
+
+      video.onloadedmetadata = () => {
+        video.currentTime = Math.min(1, video.duration / 2);
+      };
+
+      video.onseeked = () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        if (ctx) {
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const thumbnail = canvas.toDataURL('image/jpeg', 0.8);
+          resolve(thumbnail);
+        } else {
+          reject(new Error('Could not get canvas context'));
+        }
+
+        URL.revokeObjectURL(video.src);
+      };
+
+      video.onerror = () => {
+        reject(new Error('Error loading video'));
+        URL.revokeObjectURL(video.src);
+      };
+
+      video.src = URL.createObjectURL(file);
+    });
   };
 
   return (
