@@ -1,11 +1,11 @@
-# AI Video Studio - Proje Planı
+# AI Video Studio - Project Plan
 
-## 🎯 Proje Özeti
-Web tabanlı, yapay zeka destekli video düzenleme ve oluşturma platformu
+## 🎯 Project Summary
+Web-based, AI-powered video editing and creation platform
 
-## 🏗️ Mimari Tasarım
+## 🏗️ Architecture Design
 
-### Frontend Katmanı
+### Frontend Layer
 ```
 ┌─────────────────────────────────────────────┐
 │          React + Next.js Frontend           │
@@ -17,7 +17,7 @@ Web tabanlı, yapay zeka destekli video düzenleme ve oluşturma platformu
 └─────────────────────────────────────────────┘
 ```
 
-### Backend Katmanı
+### Backend Layer
 ```
 ┌─────────────────────────────────────────────┐
 │          Node.js + Express API              │
@@ -29,32 +29,32 @@ Web tabanlı, yapay zeka destekli video düzenleme ve oluşturma platformu
 └─────────────────────────────────────────────┘
 ```
 
-## 📦 Temel Özellikler
+## 📦 Core Features
 
-### 1. Video Düzenleme
-- ✂️ Kesme, kopyalama, yapıştırma
-- 🎬 Sahne yönetimi
-- 🎨 Geçiş efektleri
-- 🖱️ Sürükle-bırak arayüz
-- ⏱️ Timeline görünümü
-- 🎵 Ses ekleme ve düzenleme
+### 1. Video Editing
+- ✂️ Cut, copy, paste
+- 🎬 Scene management
+- 🎨 Transition effects
+- 🖱️ Drag & drop interface
+- ⏱️ Timeline view
+- 🎵 Audio add and edit
 
-### 2. AI Özellikleri
-- 🎨 AI ile sahne oluşturma (Text-to-Video)
-- 🖼️ AI ile görsel oluşturma (Text-to-Image)
-- ✨ Otomatik geçiş önerileri
-- 🎬 Otomatik sahne algılama
-- 📝 Otomatik altyazı oluşturma
-- 🎵 AI müzik önerisi
-- 🎨 Renk düzeltme ve iyileştirme
+### 2. AI Features
+- 🎨 AI scene generation (Text-to-Video)
+- 🖼️ AI image generation (Text-to-Image)
+- ✨ Auto transition suggestions
+- 🎬 Auto scene detection
+- 📝 Auto subtitle generation
+- 🎵 AI music suggestions
+- 🎨 Color correction and enhancement
 
-### 3. Export ve Paylaşım
-- 📤 Farklı formatlarda export (MP4, WebM, GIF)
-- 📊 Çözünürlük seçenekleri (720p, 1080p, 4K)
-- ☁️ Bulut depolama entegrasyonu
-- 🔗 Direkt sosyal medya paylaşımı
+### 3. Export & Sharing
+- 📤 Export in different formats (MP4, WebM, GIF)
+- 📊 Resolution options (720p, 1080p, 4K)
+- ☁️ Cloud storage integration
+- 🔗 Direct social media sharing
 
-## 🛠️ Teknoloji Stack
+## 🛠️ Technology Stack
 
 ### Frontend
 - **Framework**: Next.js 14 (App Router)
@@ -74,7 +74,7 @@ Web tabanlı, yapay zeka destekli video düzenleme ve oluşturma platformu
   - OpenAI (GPT-4 Vision, DALL-E)
   - Stability AI (Stable Diffusion)
   - Runway ML (Gen-2)
-  - ElevenLabs (Ses)
+  - ElevenLabs (Audio)
 
 ### Database & Storage
 - **Database**: PostgreSQL + Prisma ORM
@@ -82,7 +82,7 @@ Web tabanlı, yapay zeka destekli video düzenleme ve oluşturma platformu
 - **File Storage**: AWS S3 / Cloudflare R2
 - **Queue**: Bull (video processing)
 
-## 📁 Proje Yapısı
+## 📁 Project Structure
 
 ```
 video-studio/
@@ -117,9 +117,9 @@ video-studio/
     └── types/
 ```
 
-## 🎨 Arayüz Tasarımı
+## 🎨 UI Design
 
-### Ana Ekran Bileşenleri
+### Main Screen Components
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -142,44 +142,44 @@ video-studio/
 └────────────────────────────────────────────────────────┘
 ```
 
-## 🚀 Geliştirme Aşamaları
+## 🚀 Development Phases
 
-### Phase 1: Temel Altyapı (1-2 hafta)
-- [x] Proje yapısı oluşturma
-- [ ] Next.js frontend kurulumu
-- [ ] Express backend kurulumu
-- [ ] Database şeması tasarımı
-- [ ] Temel UI bileşenleri
+### Phase 1: Core Infrastructure (1-2 weeks)
+- [x] Create project structure
+- [x] Next.js frontend setup
+- [x] Express backend setup
+- [ ] Database schema design
+- [x] Basic UI components
 
-### Phase 2: Video Editor (2-3 hafta)
-- [ ] Timeline component
-- [ ] Drag & drop functionality
-- [ ] Video preview/player
-- [ ] Sahne yönetimi
-- [ ] Kesme, kopyalama, yapıştırma
+### Phase 2: Video Editor (2-3 weeks)
+- [x] Timeline component
+- [x] Drag & drop functionality
+- [x] Video preview/player
+- [ ] Scene management
+- [ ] Cut, copy, paste
 
-### Phase 3: AI Entegrasyonu (2-3 hafta)
+### Phase 3: AI Integration (2-3 weeks)
 - [ ] Text-to-Image (DALL-E, Stable Diffusion)
 - [ ] Text-to-Video (Runway ML)
-- [ ] Otomatik geçişler
-- [ ] Sahne analizi
-- [ ] Altyazı oluşturma
+- [ ] Auto transitions
+- [ ] Scene analysis
+- [ ] Subtitle generation
 
-### Phase 4: Video İşleme (1-2 hafta)
-- [ ] FFmpeg entegrasyonu
+### Phase 4: Video Processing (1-2 weeks)
+- [ ] FFmpeg integration
 - [ ] Video export
-- [ ] Format dönüşümleri
-- [ ] Kalite ayarları
+- [ ] Format conversions
+- [ ] Quality settings
 - [ ] Render queue
 
-### Phase 5: Polish & Optimize (1 hafta)
-- [ ] Performance optimizasyonu
-- [ ] UX iyileştirmeleri
-- [ ] Hata yönetimi
+### Phase 5: Polish & Optimize (1 week)
+- [ ] Performance optimization
+- [ ] UX improvements
+- [ ] Error handling
 - [ ] Testing
 - [ ] Documentation
 
-## 🎯 Başlangıç Adımları
+## 🎯 Getting Started
 
 1. **Development Environment**
    ```bash
@@ -187,24 +187,24 @@ video-studio/
    mkdir backend && cd backend && npm init -y
    ```
 
-2. **Temel Bağımlılıklar**
+2. **Core Dependencies**
    - Frontend: next, react, @dnd-kit, zustand, fabric, ffmpeg.wasm
    - Backend: express, prisma, bull, ffmpeg, multer
 
-3. **İlk Component: Timeline**
-   - Zaman çizelgesi görünümü
-   - Sahne kartları
-   - Sürükle-bırak
+3. **First Component: Timeline**
+   - Timeline view
+   - Scene cards
+   - Drag & drop
 
-4. **AI Entegrasyonu Hazırlığı**
-   - API key yönetimi
-   - AI servis wrapper'ları
+4. **AI Integration Prep**
+   - API key management
+   - AI service wrappers
    - Rate limiting
 
-## 💡 Önemli Notlar
+## 💡 Important Notes
 
-- **Video İşleme**: Ağır işlemler backend'de FFmpeg ile, hafif işlemler browser'da FFmpeg.wasm ile
-- **Real-time Preview**: WebRTC veya WebSocket ile real-time preview
-- **Caching**: Video işleme sonuçlarını cache'le (Redis)
-- **Progressive Loading**: Büyük videolar için chunk-based loading
-- **Responsive**: Mobil ve tablet desteği düşünülerek tasarla
+- **Video Processing**: Heavy operations on backend with FFmpeg, light operations in browser with FFmpeg.wasm
+- **Real-time Preview**: Real-time preview with WebRTC or WebSocket
+- **Caching**: Cache video processing results (Redis)
+- **Progressive Loading**: Chunk-based loading for large videos
+- **Responsive**: Design with mobile and tablet support in mind
