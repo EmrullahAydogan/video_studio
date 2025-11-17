@@ -56,19 +56,92 @@ export function AudioTrackCard({
         onSelect();
       }}
     >
-      {/* Audio waveform visual effect */}
-      <div className="absolute inset-0 flex items-center justify-center opacity-10">
-        <div className="flex gap-px h-full items-center">
-          {Array.from({ length: Math.floor(track.duration * 10) }).map((_, i) => (
-            <div
-              key={i}
-              className="w-0.5 bg-purple-500"
-              style={{
-                height: `${Math.random() * 100}%`,
-              }}
-            />
-          ))}
-        </div>
+      {/* Enhanced Audio waveform visualization */}
+      <div className="absolute inset-0 flex items-center justify-center opacity-20 px-2">
+        <svg width="100%" height="100%" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id={`waveGradient-${track.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#a855f7" stopOpacity="0.8" />
+              <stop offset="50%" stopColor="#ec4899" stopOpacity="0.6" />
+              <stop offset="100%" stopColor="#a855f7" stopOpacity="0.8" />
+            </linearGradient>
+          </defs>
+          <path
+            d={(() => {
+              const points = Math.max(50, Math.floor(track.duration * 20));
+              const width = 100;
+              const height = 100;
+              let path = `M 0,${height / 2}`;
+
+              for (let i = 0; i <= points; i++) {
+                const x = (i / points) * width;
+                const normalizedX = i / points;
+
+                // Create envelope (fade in/out effect)
+                let envelope = 1;
+                if (track.fadeIn) {
+                  const fadeInRatio = track.fadeIn / track.duration;
+                  if (normalizedX < fadeInRatio) {
+                    envelope *= normalizedX / fadeInRatio;
+                  }
+                }
+                if (track.fadeOut) {
+                  const fadeOutRatio = track.fadeOut / track.duration;
+                  if (normalizedX > (1 - fadeOutRatio)) {
+                    envelope *= (1 - normalizedX) / fadeOutRatio;
+                  }
+                }
+
+                // Generate pseudo-random waveform with multiple frequencies
+                const wave1 = Math.sin(i * 0.3) * 20;
+                const wave2 = Math.sin(i * 0.7) * 15;
+                const wave3 = Math.sin(i * 1.3) * 10;
+                const noise = (Math.sin(i * 5.7) * 5);
+
+                const amplitude = (wave1 + wave2 + wave3 + noise) * envelope * (track.volume || 1);
+                const y = (height / 2) + amplitude;
+
+                path += ` L ${x},${y}`;
+              }
+
+              // Mirror the waveform
+              for (let i = points; i >= 0; i--) {
+                const x = (i / points) * width;
+                const normalizedX = i / points;
+
+                let envelope = 1;
+                if (track.fadeIn) {
+                  const fadeInRatio = track.fadeIn / track.duration;
+                  if (normalizedX < fadeInRatio) {
+                    envelope *= normalizedX / fadeInRatio;
+                  }
+                }
+                if (track.fadeOut) {
+                  const fadeOutRatio = track.fadeOut / track.duration;
+                  if (normalizedX > (1 - fadeOutRatio)) {
+                    envelope *= (1 - normalizedX) / fadeOutRatio;
+                  }
+                }
+
+                const wave1 = Math.sin(i * 0.3) * 20;
+                const wave2 = Math.sin(i * 0.7) * 15;
+                const wave3 = Math.sin(i * 1.3) * 10;
+                const noise = (Math.sin(i * 5.7) * 5);
+
+                const amplitude = (wave1 + wave2 + wave3 + noise) * envelope * (track.volume || 1);
+                const y = (height / 2) - amplitude;
+
+                path += ` L ${x},${y}`;
+              }
+
+              path += ' Z';
+              return path;
+            })()}
+            fill={`url(#waveGradient-${track.id})`}
+            vectorEffect="non-scaling-stroke"
+            viewBox="0 0 100 100"
+          />
+        </svg>
       </div>
 
       {/* Content */}
