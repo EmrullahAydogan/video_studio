@@ -48,6 +48,9 @@ export interface Scene {
   // Effects
   filters?: Filter[];
   transition?: Transition;
+
+  // Playback Speed (per scene)
+  playbackSpeed?: number; // 0.25, 0.5, 1, 1.5, 2 (slow motion, normal, fast)
 }
 
 export interface Filter {

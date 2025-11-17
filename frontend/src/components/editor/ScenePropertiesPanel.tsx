@@ -18,6 +18,7 @@ import {
   Move,
   Maximize2,
   Eye,
+  Gauge,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -428,6 +429,125 @@ export function ScenePropertiesPanel() {
                 >
                   <X className="w-4 h-4 mr-2" />
                   Reset Layer
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {/* Playback Speed Control */}
+          <div>
+            <label className="text-xs font-medium text-muted-foreground mb-2 block flex items-center gap-2">
+              <Gauge className="w-3 h-3" />
+              PLAYBACK SPEED
+            </label>
+
+            <div className="space-y-3">
+              {/* Quick Speed Presets */}
+              <div>
+                <div className="text-xs mb-2">Speed Presets</div>
+                <div className="grid grid-cols-5 gap-1">
+                  <Button
+                    size="sm"
+                    variant={selectedScene.playbackSpeed === 0.25 ? 'default' : 'outline'}
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, { playbackSpeed: 0.25 })
+                    }
+                  >
+                    0.25x
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={selectedScene.playbackSpeed === 0.5 ? 'default' : 'outline'}
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, { playbackSpeed: 0.5 })
+                    }
+                  >
+                    0.5x
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={!selectedScene.playbackSpeed || selectedScene.playbackSpeed === 1 ? 'default' : 'outline'}
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, { playbackSpeed: 1 })
+                    }
+                  >
+                    1x
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={selectedScene.playbackSpeed === 1.5 ? 'default' : 'outline'}
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, { playbackSpeed: 1.5 })
+                    }
+                  >
+                    1.5x
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={selectedScene.playbackSpeed === 2 ? 'default' : 'outline'}
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, { playbackSpeed: 2 })
+                    }
+                  >
+                    2x
+                  </Button>
+                </div>
+              </div>
+
+              {/* Speed Slider */}
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span>Custom Speed</span>
+                  <span className="text-muted-foreground">
+                    {(selectedScene.playbackSpeed || 1).toFixed(2)}x
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="25"
+                  max="200"
+                  step="25"
+                  value={(selectedScene.playbackSpeed || 1) * 100}
+                  onChange={(e) =>
+                    updateScene(selectedScene.id, {
+                      playbackSpeed: parseInt(e.target.value) / 100,
+                    })
+                  }
+                  className="w-full"
+                />
+                <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
+                  <span>Slow Motion</span>
+                  <span>Normal</span>
+                  <span>Fast Forward</span>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="text-xs text-muted-foreground bg-secondary/50 p-2 rounded">
+                {selectedScene.playbackSpeed && selectedScene.playbackSpeed < 1
+                  ? '🐢 Slow motion effect'
+                  : selectedScene.playbackSpeed && selectedScene.playbackSpeed > 1
+                  ? '⚡ Fast forward effect'
+                  : '▶️ Normal speed'}
+              </div>
+
+              {/* Reset Button */}
+              {selectedScene.playbackSpeed && selectedScene.playbackSpeed !== 1 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  onClick={() =>
+                    updateScene(selectedScene.id, { playbackSpeed: 1 })
+                  }
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Reset to Normal Speed
                 </Button>
               )}
             </div>
