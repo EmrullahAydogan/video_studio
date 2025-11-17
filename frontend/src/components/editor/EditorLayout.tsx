@@ -5,7 +5,7 @@ import { useProjectStore } from '@/stores/useProjectStore';
 import { projectStorage } from '@/lib/projectStorage';
 import { VideoPreview } from './VideoPreview';
 import { Timeline } from '../timeline/Timeline';
-import { AIPanel } from '../ai/AIPanel';
+import { RightSidebar } from './RightSidebar';
 import { Toolbar } from './Toolbar';
 import { AssetPanel } from './AssetPanel';
 
@@ -54,10 +54,8 @@ export function EditorLayout() {
           </div>
         </div>
 
-        {/* Right Sidebar - AI Panel */}
-        <div className="w-80">
-          <AIPanel />
-        </div>
+        {/* Right Sidebar - AI Panel & Properties */}
+        <RightSidebar />
       </div>
     </div>
   );
