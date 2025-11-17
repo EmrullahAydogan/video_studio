@@ -1,39 +1,39 @@
 # 🎬 AI Video Studio
 
-**Yapay Zeka Destekli Profesyonel Video Düzenleme Platformu**
+**AI-Powered Professional Video Editing Platform**
 
-Modern web teknolojileri ile geliştirilmiş, AI tabanlı video oluşturma ve düzenleme stüdyosu. Sürükle-bırak arayüzü, gerçek zamanlı önizleme ve yapay zeka entegrasyonları ile profesyonel videolar oluşturun.
+A modern AI-based video creation and editing studio built with cutting-edge web technologies. Create professional videos with drag-and-drop interface, real-time preview, and artificial intelligence integrations.
 
 ![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
 ![Next.js](https://img.shields.io/badge/Next.js-14-black)
 
-## ✨ Özellikler
+## ✨ Features
 
-### 🎥 Video Düzenleme
-- ✂️ **Kesme, Kopyalama, Yapıştırma** - Kolay video manipülasyonu
-- 🎬 **Sahne Yönetimi** - Sahneleri organize edin ve düzenleyin
-- 🎨 **Geçiş Efektleri** - Profesyonel geçişler (fade, slide, zoom, dissolve)
-- 🖱️ **Sürükle-Bırak** - Sezgisel timeline arayüzü
-- ⏱️ **Timeline Görünümü** - Detaylı zaman çizelgesi
-- 🎵 **Ses Yönetimi** - Müzik ve ses efektleri ekleme
+### 🎥 Video Editing
+- ✂️ **Cut, Copy, Paste** - Easy video manipulation
+- 🎬 **Scene Management** - Organize and arrange scenes
+- 🎨 **Transition Effects** - Professional transitions (fade, slide, zoom, dissolve)
+- 🖱️ **Drag & Drop** - Intuitive timeline interface
+- ⏱️ **Timeline View** - Detailed timeline visualization
+- 🎵 **Audio Management** - Add music and sound effects
 
-### 🤖 AI Özellikleri
-- 🎨 **Text-to-Image** - Metinden görsel oluşturma (DALL-E, Stable Diffusion)
-- 📹 **Text-to-Video** - Metinden video oluşturma (Runway ML)
-- ✨ **Otomatik Geçişler** - AI destekli geçiş önerileri
-- 🔍 **Sahne Analizi** - GPT-4 Vision ile sahne analizi
-- 📝 **Otomatik Altyazı** - Konuşmadan altyazı oluşturma
-- 🎨 **Renk İyileştirme** - AI tabanlı renk düzeltme
+### 🤖 AI Features
+- 🎨 **Text-to-Image** - Generate images from text (DALL-E, Stable Diffusion)
+- 📹 **Text-to-Video** - Generate videos from text (Runway ML)
+- ✨ **Auto Transitions** - AI-powered transition suggestions
+- 🔍 **Scene Analysis** - Scene analysis with GPT-4 Vision
+- 📝 **Auto Subtitles** - Generate subtitles from speech
+- 🎨 **Color Enhancement** - AI-based color correction
 
-### 📤 Export ve Paylaşım
-- 🎞️ **Çoklu Format** - MP4, WebM, GIF
-- 📊 **Esnek Çözünürlük** - 720p, 1080p, 4K
-- ☁️ **Bulut Depolama** - AWS S3 entegrasyonu
-- 🔗 **Sosyal Medya** - Direkt paylaşım
+### 📤 Export & Sharing
+- 🎞️ **Multiple Formats** - MP4, WebM, GIF
+- 📊 **Flexible Resolution** - 720p, 1080p, 4K
+- ☁️ **Cloud Storage** - AWS S3 integration
+- 🔗 **Social Media** - Direct sharing
 
-## 🏗️ Mimari
+## 🏗️ Architecture
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -88,53 +88,53 @@ Modern web teknolojileri ile geliştirilmiş, AI tabanlı video oluşturma ve d�
 - **Storage**: AWS S3
 - **Deployment**: Vercel (Frontend), AWS EC2 (Backend)
 
-## 🚀 Hızlı Başlangıç
+## 🚀 Quick Start
 
-### Gereksinimler
+### Requirements
 
 - Node.js 18+
-- npm veya yarn
-- FFmpeg (video işleme için)
-- Redis (opsiyonel, export queue için)
+- npm or yarn
+- FFmpeg (for video processing)
+- Redis (optional, for export queue)
 
-### Kurulum
+### Installation
 
-1. **Repository'yi klonlayın**
+1. **Clone the repository**
 ```bash
 git clone <your-repo-url>
 cd video_studio
 ```
 
-2. **Bağımlılıkları yükleyin**
+2. **Install dependencies**
 ```bash
-# Root package.json için
+# Root package.json
 npm install
 
-# Frontend için
+# Frontend
 cd frontend
 npm install
 
-# Backend için
+# Backend
 cd ../backend
 npm install
 ```
 
-3. **Environment değişkenlerini ayarlayın**
+3. **Set up environment variables**
 
-Backend `.env` dosyası oluşturun:
+Create backend `.env` file:
 ```bash
 cd backend
 cp .env.example .env
-# .env dosyasını düzenleyin ve API anahtarlarınızı ekleyin
+# Edit .env and add your API keys
 ```
 
-4. **Geliştirme sunucularını başlatın**
+4. **Start development servers**
 
 ```bash
-# Root dizinden (hem frontend hem backend)
+# From root directory (both frontend and backend)
 npm run dev
 
-# VEYA ayrı ayrı:
+# OR separately:
 
 # Frontend (port 3000)
 cd frontend
@@ -145,12 +145,12 @@ cd backend
 npm run dev
 ```
 
-5. **Tarayıcınızda açın**
+5. **Open in your browser**
 ```
 http://localhost:3000
 ```
 
-## 📁 Proje Yapısı
+## 📁 Project Structure
 
 ```
 video-studio/
@@ -202,125 +202,125 @@ video-studio/
 │   ├── tsconfig.json
 │   └── .env.example
 │
-├── PROJECT_PLAN.md          # Detaylı proje planı
+├── PROJECT_PLAN.md          # Detailed project plan
 ├── package.json             # Workspace package.json
-└── README.md               # Bu dosya
+└── README.md               # This file
 ```
 
-## 🎯 Kullanım
+## 🎯 Usage
 
-### 1. Proje Oluşturma
+### 1. Create Project
 
-Uygulama açıldığında otomatik olarak yeni bir proje oluşturulur.
+A new project is automatically created when the application opens.
 
-### 2. Sahne Ekleme
+### 2. Add Scenes
 
-**Manuel Ekleme:**
-- Sol paneldeki "Assets" bölümünden dosya yükleyin
-- Video veya görsel dosyalarını sürükle-bırak yapın
+**Manual Import:**
+- Upload files from the "Assets" panel on the left
+- Drag and drop video or image files
 
-**AI ile Oluşturma:**
-- Sağ panelde "AI Studio"yu kullanın
-- Prompt girin (örn: "A sunset over the ocean")
-- "Generate Image" veya "Generate Video" tıklayın
-- Oluşturulan sahne otomatik olarak timeline'a eklenir
+**AI Generation:**
+- Use "AI Studio" on the right panel
+- Enter a prompt (e.g., "A sunset over the ocean")
+- Click "Generate Image" or "Generate Video"
+- Generated scene is automatically added to timeline
 
-### 3. Timeline'da Düzenleme
+### 3. Edit Timeline
 
-- **Sürükle-Bırak**: Sahneleri yeniden sıralayın
-- **Kesme**: Sahneye tıklayın, süresini ayarlayın
-- **Kopyala**: Sahne üzerindeki copy butonuna tıklayın
-- **Sil**: Sahne üzerindeki trash butonuna tıklayın
+- **Drag & Drop**: Reorder scenes
+- **Trim**: Click on scene, adjust duration
+- **Copy**: Click copy button on scene
+- **Delete**: Click trash button on scene
 
-### 4. Önizleme
+### 4. Preview
 
-- Ortadaki canvas alanında gerçek zamanlı önizleme
-- Play/Pause butonları ile kontrol
-- Progress bar ile timeline'da gezinme
-- Zoom in/out ile detaylı görünüm
+- Real-time preview in center canvas area
+- Control with Play/Pause buttons
+- Navigate timeline with progress bar
+- Zoom in/out for detailed view
 
 ### 5. Export
 
-- Toolbar'da "Export" butonuna tıklayın
-- Format seçin (MP4, WebM, GIF)
-- Kalite ayarlarını belirleyin
-- Render işlemini başlatın
+- Click "Export" button in toolbar
+- Select format (MP4, WebM, GIF)
+- Set quality options
+- Start rendering
 
 ## 🔌 API Endpoints
 
-### Video İşleme
+### Video Processing
 ```
-POST   /api/video/upload       # Video yükleme
-POST   /api/video/process      # Video işleme
-GET    /api/video/info/:id     # Video bilgisi
+POST   /api/video/upload       # Upload video
+POST   /api/video/process      # Process video
+GET    /api/video/info/:id     # Get video info
 ```
 
-### AI Servisleri
+### AI Services
 ```
-POST   /api/ai/generate/image  # Görsel oluşturma
-POST   /api/ai/generate/video  # Video oluşturma
-POST   /api/ai/suggest-transitions  # Geçiş önerisi
-POST   /api/ai/analyze-scene   # Sahne analizi
+POST   /api/ai/generate/image  # Generate image
+POST   /api/ai/generate/video  # Generate video
+POST   /api/ai/suggest-transitions  # Suggest transitions
+POST   /api/ai/analyze-scene   # Analyze scene
 ```
 
 ### Export
 ```
-POST   /api/export/render      # Video render
-GET    /api/export/status/:id  # Render durumu
+POST   /api/export/render      # Render video
+GET    /api/export/status/:id  # Get render status
 ```
 
-## 🎨 Arayüz Bileşenleri
+## 🎨 UI Components
 
 ### EditorLayout
-Ana düzenleyici layoutu. Tüm bileşenleri organize eder.
+Main editor layout. Organizes all components.
 
 ### Timeline
-- Sahneleri görselleştirir
-- Sürükle-bırak ile yeniden sıralama
-- Zoom kontrolleri
-- Playhead göstergesi
+- Visualizes scenes
+- Reorder with drag and drop
+- Zoom controls
+- Playhead indicator
 
 ### VideoPreview
-- Canvas tabanlı önizleme
-- Gerçek zamanlı render
-- Playback kontrolleri
-- Timeline senkronizasyonu
+- Canvas-based preview
+- Real-time rendering
+- Playback controls
+- Timeline synchronization
 
 ### AIPanel
-- AI görsel/video oluşturma
-- Prompt girişi
-- Önerilmiş promptlar
-- AI özellikleri listesi
+- AI image/video generation
+- Prompt input
+- Suggested prompts
+- AI features list
 
 ### AssetPanel
-- Medya dosyaları yönetimi
-- Dosya yükleme
-- Asset organizasyonu
+- Media file management
+- File upload
+- Asset organization
 
-## 🔧 Geliştirme
+## 🔧 Development
 
-### Yeni Özellik Ekleme
+### Adding New Features
 
 1. **Frontend Component**
 ```typescript
-// src/components/yeni-feature/YeniComponent.tsx
-export function YeniComponent() {
+// src/components/new-feature/NewComponent.tsx
+export function NewComponent() {
   // Component logic
 }
 ```
 
 2. **Backend Endpoint**
 ```typescript
-// backend/src/routes/yeni.ts
-router.post('/yeni-endpoint', async (req, res) => {
+// backend/src/routes/new.ts
+router.post('/new-endpoint', async (req, res) => {
   // Endpoint logic
 });
 ```
 
-3. **Type Tanımlama**
+3. **Type Definition**
 ```typescript
 // frontend/src/types/index.ts
-export interface YeniType {
+export interface NewType {
   // Type definition
 }
 ```
@@ -349,53 +349,53 @@ cd backend
 npm run build
 ```
 
-## 📝 TODO ve Gelecek Özellikler
+## 📝 TODO & Future Features
 
 ### Phase 1 - Core Features ✅
-- [x] Proje yapısı
+- [x] Project structure
 - [x] Timeline component
 - [x] Drag & drop
 - [x] Video preview
 - [x] AI panel
 
 ### Phase 2 - Advanced Features 🚧
-- [ ] Gerçek AI entegrasyonları (OpenAI, Runway)
-- [ ] FFmpeg video işleme
+- [ ] Real AI integrations (OpenAI, Runway)
+- [ ] FFmpeg video processing
 - [ ] Video export/render
-- [ ] Undo/Redo sistemi
+- [ ] Undo/Redo system
 - [ ] Keyboard shortcuts
 
 ### Phase 3 - Enhancement 📋
-- [ ] Kullanıcı hesapları
-- [ ] Proje kaydetme/yükleme
-- [ ] Bulut depolama
-- [ ] Gerçek zamanlı işbirliği
+- [ ] User accounts
+- [ ] Project save/load
+- [ ] Cloud storage
+- [ ] Real-time collaboration
 - [ ] Template library
-- [ ] Ses düzenleme araçları
+- [ ] Audio editing tools
 
 ### Phase 4 - Professional Features 💡
-- [ ] Gelişmiş efektler
+- [ ] Advanced effects
 - [ ] Color grading
 - [ ] Motion graphics
 - [ ] 3D transitions
 - [ ] AI video enhancement
 - [ ] Batch processing
 
-## 🤝 Katkıda Bulunma
+## 🤝 Contributing
 
-Katkılarınızı bekliyoruz! Lütfen şu adımları takip edin:
+We welcome contributions! Please follow these steps:
 
-1. Fork yapın
-2. Feature branch oluşturun (`git checkout -b feature/harika-ozellik`)
-3. Değişikliklerinizi commit edin (`git commit -m 'Harika özellik eklendi'`)
-4. Branch'inizi push edin (`git push origin feature/harika-ozellik`)
-5. Pull Request açın
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## 📄 Lisans
+## 📄 License
 
-Bu proje MIT lisansı altında lisanslanmıştır.
+This project is licensed under the MIT License.
 
-## 🙏 Teşekkürler
+## 🙏 Acknowledgments
 
 - [Next.js](https://nextjs.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
@@ -403,12 +403,12 @@ Bu proje MIT lisansı altında lisanslanmıştır.
 - [OpenAI](https://openai.com/)
 - [DND Kit](https://dndkit.com/)
 
-## 📧 İletişim
+## 📧 Contact
 
-Sorularınız için issue açabilir veya pull request gönderebilirsiniz.
+For questions, please open an issue or submit a pull request.
 
 ---
 
-**Yapay Zeka ile Video Düzenlemenin Geleceği** 🚀
+**The Future of AI-Powered Video Editing** 🚀
 
 Made with ❤️ using Next.js, TypeScript, and AI
