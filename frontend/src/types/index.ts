@@ -48,6 +48,29 @@ export interface Scene {
   // Effects
   filters?: Filter[];
   transition?: Transition;
+
+  // Playback Speed (per scene)
+  playbackSpeed?: number; // 0.25, 0.5, 1, 1.5, 2 (slow motion, normal, fast)
+
+  // AI Effects
+  backgroundRemoval?: {
+    enabled: boolean;
+    provider?: 'remove-bg' | 'stability' | 'runway';
+    quality?: 'low' | 'medium' | 'high';
+  };
+
+  // Transform Effects
+  transform?: {
+    rotate?: number; // 0, 90, 180, 270 degrees
+    flipHorizontal?: boolean;
+    flipVertical?: boolean;
+    crop?: {
+      top: number; // percentage 0-50
+      right: number;
+      bottom: number;
+      left: number;
+    };
+  };
 }
 
 export interface Filter {
@@ -74,11 +97,20 @@ export interface AudioTrack {
   fadeOut?: number; // fade out duration in seconds
 }
 
+export interface Marker {
+  id: string;
+  name: string;
+  time: number; // timestamp in seconds
+  color?: string; // marker color (default: primary color)
+  description?: string; // optional description
+}
+
 export interface Project {
   id: string;
   name: string;
   scenes: Scene[];
   audioTracks: AudioTrack[];
+  markers: Marker[];
   totalDuration: number;
   resolution: {
     width: number;

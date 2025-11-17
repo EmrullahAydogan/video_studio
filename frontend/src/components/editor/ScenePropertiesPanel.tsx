@@ -18,6 +18,12 @@ import {
   Move,
   Maximize2,
   Eye,
+  Gauge,
+  Wand2,
+  RotateCw,
+  FlipHorizontal,
+  FlipVertical,
+  Crop,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -433,6 +439,125 @@ export function ScenePropertiesPanel() {
             </div>
           </div>
 
+          {/* Playback Speed Control */}
+          <div>
+            <label className="text-xs font-medium text-muted-foreground mb-2 block flex items-center gap-2">
+              <Gauge className="w-3 h-3" />
+              PLAYBACK SPEED
+            </label>
+
+            <div className="space-y-3">
+              {/* Quick Speed Presets */}
+              <div>
+                <div className="text-xs mb-2">Speed Presets</div>
+                <div className="grid grid-cols-5 gap-1">
+                  <Button
+                    size="sm"
+                    variant={selectedScene.playbackSpeed === 0.25 ? 'default' : 'outline'}
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, { playbackSpeed: 0.25 })
+                    }
+                  >
+                    0.25x
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={selectedScene.playbackSpeed === 0.5 ? 'default' : 'outline'}
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, { playbackSpeed: 0.5 })
+                    }
+                  >
+                    0.5x
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={!selectedScene.playbackSpeed || selectedScene.playbackSpeed === 1 ? 'default' : 'outline'}
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, { playbackSpeed: 1 })
+                    }
+                  >
+                    1x
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={selectedScene.playbackSpeed === 1.5 ? 'default' : 'outline'}
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, { playbackSpeed: 1.5 })
+                    }
+                  >
+                    1.5x
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={selectedScene.playbackSpeed === 2 ? 'default' : 'outline'}
+                    className="h-8 text-xs"
+                    onClick={() =>
+                      updateScene(selectedScene.id, { playbackSpeed: 2 })
+                    }
+                  >
+                    2x
+                  </Button>
+                </div>
+              </div>
+
+              {/* Speed Slider */}
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span>Custom Speed</span>
+                  <span className="text-muted-foreground">
+                    {(selectedScene.playbackSpeed || 1).toFixed(2)}x
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="25"
+                  max="200"
+                  step="25"
+                  value={(selectedScene.playbackSpeed || 1) * 100}
+                  onChange={(e) =>
+                    updateScene(selectedScene.id, {
+                      playbackSpeed: parseInt(e.target.value) / 100,
+                    })
+                  }
+                  className="w-full"
+                />
+                <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
+                  <span>Slow Motion</span>
+                  <span>Normal</span>
+                  <span>Fast Forward</span>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="text-xs text-muted-foreground bg-secondary/50 p-2 rounded">
+                {selectedScene.playbackSpeed && selectedScene.playbackSpeed < 1
+                  ? '🐢 Slow motion effect'
+                  : selectedScene.playbackSpeed && selectedScene.playbackSpeed > 1
+                  ? '⚡ Fast forward effect'
+                  : '▶️ Normal speed'}
+              </div>
+
+              {/* Reset Button */}
+              {selectedScene.playbackSpeed && selectedScene.playbackSpeed !== 1 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  onClick={() =>
+                    updateScene(selectedScene.id, { playbackSpeed: 1 })
+                  }
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Reset to Normal Speed
+                </Button>
+              )}
+            </div>
+          </div>
+
           {/* Filters */}
           <div>
             <label className="text-xs font-medium text-muted-foreground mb-2 block flex items-center gap-2">
@@ -770,6 +895,367 @@ export function ScenePropertiesPanel() {
                         </select>
                       </div>
                     )}
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Transform Effects - Only for video and image scenes */}
+          {(selectedScene.type === 'video' || selectedScene.type === 'image') && (
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-2 block flex items-center gap-2">
+                <RotateCw className="w-3 h-3" />
+                TRANSFORM
+              </label>
+
+              <div className="space-y-3">
+                {/* Rotation */}
+                <div>
+                  <div className="text-xs mb-2">Rotation</div>
+                  <div className="grid grid-cols-4 gap-1">
+                    <Button
+                      size="sm"
+                      variant={!selectedScene.transform?.rotate || selectedScene.transform?.rotate === 0 ? 'default' : 'outline'}
+                      className="h-8 text-xs"
+                      onClick={() =>
+                        updateScene(selectedScene.id, {
+                          transform: { ...selectedScene.transform, rotate: 0 },
+                        })
+                      }
+                    >
+                      0°
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={selectedScene.transform?.rotate === 90 ? 'default' : 'outline'}
+                      className="h-8 text-xs"
+                      onClick={() =>
+                        updateScene(selectedScene.id, {
+                          transform: { ...selectedScene.transform, rotate: 90 },
+                        })
+                      }
+                    >
+                      90°
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={selectedScene.transform?.rotate === 180 ? 'default' : 'outline'}
+                      className="h-8 text-xs"
+                      onClick={() =>
+                        updateScene(selectedScene.id, {
+                          transform: { ...selectedScene.transform, rotate: 180 },
+                        })
+                      }
+                    >
+                      180°
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={selectedScene.transform?.rotate === 270 ? 'default' : 'outline'}
+                      className="h-8 text-xs"
+                      onClick={() =>
+                        updateScene(selectedScene.id, {
+                          transform: { ...selectedScene.transform, rotate: 270 },
+                        })
+                      }
+                    >
+                      270°
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Flip Controls */}
+                <div>
+                  <div className="text-xs mb-2">Flip</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      size="sm"
+                      variant={selectedScene.transform?.flipHorizontal ? 'default' : 'outline'}
+                      className="h-8"
+                      onClick={() =>
+                        updateScene(selectedScene.id, {
+                          transform: {
+                            ...selectedScene.transform,
+                            flipHorizontal: !selectedScene.transform?.flipHorizontal,
+                          },
+                        })
+                      }
+                    >
+                      <FlipHorizontal className="w-4 h-4 mr-2" />
+                      Horizontal
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={selectedScene.transform?.flipVertical ? 'default' : 'outline'}
+                      className="h-8"
+                      onClick={() =>
+                        updateScene(selectedScene.id, {
+                          transform: {
+                            ...selectedScene.transform,
+                            flipVertical: !selectedScene.transform?.flipVertical,
+                          },
+                        })
+                      }
+                    >
+                      <FlipVertical className="w-4 h-4 mr-2" />
+                      Vertical
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Crop Controls */}
+                <div>
+                  <div className="text-xs mb-2 flex items-center gap-2">
+                    <Crop className="w-3 h-3" />
+                    Crop
+                  </div>
+                  <div className="space-y-2">
+                    {/* Top Crop */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>Top</span>
+                        <span className="text-muted-foreground">
+                          {selectedScene.transform?.crop?.top || 0}%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="50"
+                        value={selectedScene.transform?.crop?.top || 0}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            transform: {
+                              ...selectedScene.transform,
+                              crop: {
+                                top: parseInt(e.target.value),
+                                right: selectedScene.transform?.crop?.right || 0,
+                                bottom: selectedScene.transform?.crop?.bottom || 0,
+                                left: selectedScene.transform?.crop?.left || 0,
+                              },
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Bottom Crop */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>Bottom</span>
+                        <span className="text-muted-foreground">
+                          {selectedScene.transform?.crop?.bottom || 0}%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="50"
+                        value={selectedScene.transform?.crop?.bottom || 0}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            transform: {
+                              ...selectedScene.transform,
+                              crop: {
+                                top: selectedScene.transform?.crop?.top || 0,
+                                right: selectedScene.transform?.crop?.right || 0,
+                                bottom: parseInt(e.target.value),
+                                left: selectedScene.transform?.crop?.left || 0,
+                              },
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Left Crop */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>Left</span>
+                        <span className="text-muted-foreground">
+                          {selectedScene.transform?.crop?.left || 0}%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="50"
+                        value={selectedScene.transform?.crop?.left || 0}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            transform: {
+                              ...selectedScene.transform,
+                              crop: {
+                                top: selectedScene.transform?.crop?.top || 0,
+                                right: selectedScene.transform?.crop?.right || 0,
+                                bottom: selectedScene.transform?.crop?.bottom || 0,
+                                left: parseInt(e.target.value),
+                              },
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Right Crop */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>Right</span>
+                        <span className="text-muted-foreground">
+                          {selectedScene.transform?.crop?.right || 0}%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="50"
+                        value={selectedScene.transform?.crop?.right || 0}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            transform: {
+                              ...selectedScene.transform,
+                              crop: {
+                                top: selectedScene.transform?.crop?.top || 0,
+                                right: parseInt(e.target.value),
+                                bottom: selectedScene.transform?.crop?.bottom || 0,
+                                left: selectedScene.transform?.crop?.left || 0,
+                              },
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Reset Transform Button */}
+                {selectedScene.transform && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={() =>
+                      updateScene(selectedScene.id, { transform: undefined })
+                    }
+                  >
+                    <X className="w-4 h-4 mr-2" />
+                    Reset Transform
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* AI Background Removal - Only for video and image scenes */}
+          {(selectedScene.type === 'video' || selectedScene.type === 'image') && (
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-2 block flex items-center gap-2">
+                <Wand2 className="w-3 h-3" />
+                AI BACKGROUND REMOVAL
+              </label>
+
+              <div className="space-y-3">
+                {/* Enable Toggle */}
+                <div className="flex items-center justify-between p-3 border rounded-lg">
+                  <div>
+                    <div className="text-sm font-medium">Remove Background</div>
+                    <div className="text-xs text-muted-foreground">
+                      AI-powered background removal
+                    </div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedScene.backgroundRemoval?.enabled || false}
+                      onChange={(e) =>
+                        updateScene(selectedScene.id, {
+                          backgroundRemoval: {
+                            enabled: e.target.checked,
+                            provider: 'remove-bg',
+                            quality: 'medium',
+                          },
+                        })
+                      }
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                  </label>
+                </div>
+
+                {selectedScene.backgroundRemoval?.enabled && (
+                  <>
+                    {/* AI Provider */}
+                    <div>
+                      <div className="text-xs mb-1">AI Provider</div>
+                      <select
+                        value={selectedScene.backgroundRemoval?.provider || 'remove-bg'}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            backgroundRemoval: {
+                              ...selectedScene.backgroundRemoval!,
+                              provider: e.target.value as any,
+                            },
+                          })
+                        }
+                        className="w-full px-3 py-2 text-sm border rounded-md bg-background"
+                      >
+                        <option value="remove-bg">Remove.bg</option>
+                        <option value="stability">Stability AI</option>
+                        <option value="runway">Runway ML</option>
+                      </select>
+                    </div>
+
+                    {/* Quality */}
+                    <div>
+                      <div className="text-xs mb-1">Processing Quality</div>
+                      <select
+                        value={selectedScene.backgroundRemoval?.quality || 'medium'}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            backgroundRemoval: {
+                              ...selectedScene.backgroundRemoval!,
+                              quality: e.target.value as any,
+                            },
+                          })
+                        }
+                        className="w-full px-3 py-2 text-sm border rounded-md bg-background"
+                      >
+                        <option value="low">Low (Faster)</option>
+                        <option value="medium">Medium (Balanced)</option>
+                        <option value="high">High (Best Quality)</option>
+                      </select>
+                    </div>
+
+                    {/* Info Message */}
+                    <div className="text-xs bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                      <div className="font-medium text-blue-900 dark:text-blue-100 mb-1">
+                        ℹ️ AI Integration Required
+                      </div>
+                      <div className="text-blue-700 dark:text-blue-300">
+                        Background removal requires an AI provider API key. Configure your API
+                        keys in Settings to enable this feature.
+                      </div>
+                    </div>
+
+                    {/* Reset Button */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      onClick={() =>
+                        updateScene(selectedScene.id, {
+                          backgroundRemoval: undefined,
+                        })
+                      }
+                    >
+                      <X className="w-4 h-4 mr-2" />
+                      Disable Background Removal
+                    </Button>
                   </>
                 )}
               </div>
