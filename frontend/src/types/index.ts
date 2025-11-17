@@ -25,6 +25,15 @@ export interface Scene {
   fontSize?: number;
   fontFamily?: string;
   color?: string;
+  backgroundColor?: string;
+
+  // Text Animation properties
+  textAnimation?: {
+    type: 'none' | 'fadeIn' | 'slideIn' | 'bounce' | 'typewriter' | 'zoom' | 'rotate';
+    duration: number; // in seconds
+    delay: number; // in seconds
+    direction?: 'left' | 'right' | 'up' | 'down';
+  };
 
   // Layer/Position properties (for PiP and overlays)
   layer?: number; // z-index, higher = on top

@@ -654,6 +654,128 @@ export function ScenePropertiesPanel() {
             )}
           </div>
 
+          {/* Text Animation - Only for text scenes */}
+          {selectedScene.type === 'text' && (
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-2 block flex items-center gap-2">
+                <Type className="w-3 h-3" />
+                TEXT ANIMATION
+              </label>
+
+              <div className="space-y-3">
+                {/* Animation Type */}
+                <div>
+                  <div className="text-xs mb-1">Animation Type</div>
+                  <select
+                    value={selectedScene.textAnimation?.type || 'none'}
+                    onChange={(e) => {
+                      if (e.target.value === 'none') {
+                        updateScene(selectedScene.id, { textAnimation: undefined });
+                      } else {
+                        updateScene(selectedScene.id, {
+                          textAnimation: {
+                            type: e.target.value as any,
+                            duration: 1,
+                            delay: 0,
+                          },
+                        });
+                      }
+                    }}
+                    className="w-full px-3 py-2 text-sm border rounded-md bg-background"
+                  >
+                    <option value="none">None</option>
+                    <option value="fadeIn">Fade In</option>
+                    <option value="slideIn">Slide In</option>
+                    <option value="bounce">Bounce</option>
+                    <option value="typewriter">Typewriter</option>
+                    <option value="zoom">Zoom In</option>
+                    <option value="rotate">Rotate In</option>
+                  </select>
+                </div>
+
+                {selectedScene.textAnimation && selectedScene.textAnimation.type !== 'none' && (
+                  <>
+                    {/* Animation Duration */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>Animation Duration</span>
+                        <span className="text-muted-foreground">
+                          {selectedScene.textAnimation.duration}s
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0.1"
+                        max="3"
+                        step="0.1"
+                        value={selectedScene.textAnimation.duration}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            textAnimation: {
+                              ...selectedScene.textAnimation!,
+                              duration: parseFloat(e.target.value),
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Animation Delay */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>Animation Delay</span>
+                        <span className="text-muted-foreground">
+                          {selectedScene.textAnimation.delay}s
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="2"
+                        step="0.1"
+                        value={selectedScene.textAnimation.delay}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            textAnimation: {
+                              ...selectedScene.textAnimation!,
+                              delay: parseFloat(e.target.value),
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Direction for slideIn */}
+                    {selectedScene.textAnimation.type === 'slideIn' && (
+                      <div>
+                        <div className="text-xs mb-1">Slide Direction</div>
+                        <select
+                          value={selectedScene.textAnimation.direction || 'left'}
+                          onChange={(e) =>
+                            updateScene(selectedScene.id, {
+                              textAnimation: {
+                                ...selectedScene.textAnimation!,
+                                direction: e.target.value as any,
+                              },
+                            })
+                          }
+                          className="w-full px-3 py-2 text-sm border rounded-md bg-background"
+                        >
+                          <option value="left">From Left</option>
+                          <option value="right">From Right</option>
+                          <option value="up">From Top</option>
+                          <option value="down">From Bottom</option>
+                        </select>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Actions */}
           <div className="pt-4 border-t space-y-2">
             {/* Split Scene */}
