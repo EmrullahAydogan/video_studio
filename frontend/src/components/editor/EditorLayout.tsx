@@ -23,6 +23,7 @@ export function EditorLayout() {
     setLoop,
     setVolume,
     setPlaybackSpeed,
+    setSnappingEnabled,
     saveProject,
     deleteScene,
     duplicateScene,
@@ -173,6 +174,11 @@ export function EditorLayout() {
       ctrl: true,
       description: 'Reset zoom',
       handler: () => setZoom(50),
+    },
+    {
+      key: 's',
+      description: 'Toggle snapping',
+      handler: () => setSnappingEnabled(!timeline.snappingEnabled),
     },
     // Editing
     {

@@ -20,7 +20,7 @@ import { useProjectStore } from '@/stores/useProjectStore';
 import { SceneCard } from './SceneCard';
 import { AudioTrackCard } from './AudioTrackCard';
 import { formatTime } from '@/lib/utils';
-import { Plus, ZoomIn, ZoomOut, Upload, Maximize2, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Plus, ZoomIn, ZoomOut, Upload, Maximize2, ArrowLeft, ArrowRight, Magnet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function Timeline() {
@@ -33,6 +33,7 @@ export function Timeline() {
     setSelectedScene,
     setCurrentTime,
     setZoom,
+    setSnappingEnabled,
     deleteAudioTrack,
     updateAudioTrack,
     addScene,
@@ -74,13 +75,52 @@ export function Timeline() {
     }
   };
 
+  // Snapping utility function
+  const snapTime = (time: number): number => {
+    if (!timeline.snappingEnabled || !project) return time;
+
+    const snapPoints: number[] = [];
+    const snapThresholdTime = timeline.snapThreshold / timeline.zoom;
+
+    // Add grid snap points (every second)
+    const gridInterval = 1; // snap to every second
+    const nearestGrid = Math.round(time / gridInterval) * gridInterval;
+    snapPoints.push(nearestGrid);
+
+    // Add marker snap points
+    project.markers.forEach((marker) => {
+      snapPoints.push(marker.time);
+    });
+
+    // Add scene boundary snap points
+    project.scenes.forEach((scene) => {
+      snapPoints.push(scene.startTime);
+      snapPoints.push(scene.startTime + scene.duration);
+    });
+
+    // Find closest snap point
+    let closestSnap = time;
+    let minDistance = snapThresholdTime;
+
+    snapPoints.forEach((snapPoint) => {
+      const distance = Math.abs(time - snapPoint);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestSnap = snapPoint;
+      }
+    });
+
+    return closestSnap;
+  };
+
   const handleTimelineClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!timelineRef.current) return;
 
     const rect = timelineRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const time = x / timeline.zoom;
-    setCurrentTime(time);
+    const snappedTime = snapTime(time);
+    setCurrentTime(snappedTime);
   };
 
   const handleZoom = (delta: number) => {
@@ -221,6 +261,18 @@ export function Timeline() {
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Snapping Toggle */}
+          <Button
+            size="sm"
+            variant={timeline.snappingEnabled ? 'default' : 'outline'}
+            onClick={() => setSnappingEnabled(!timeline.snappingEnabled)}
+            title={timeline.snappingEnabled ? 'Snapping enabled (S to toggle)' : 'Snapping disabled (S to toggle)'}
+          >
+            <Magnet className="w-4 h-4" />
+          </Button>
+
+          <div className="h-6 w-px bg-border mx-1" />
+
           {/* Pan Controls */}
           <Button
             size="sm"
@@ -295,6 +347,7 @@ export function Timeline() {
           className="absolute inset-0"
           style={{ width: `${totalDuration * timeline.zoom}px` }}
         >
+          {/* Time grid */}
           {Array.from({ length: Math.ceil(totalDuration) }).map((_, i) => (
             <div
               key={i}
@@ -304,6 +357,28 @@ export function Timeline() {
               <span className="absolute top-1 left-1 text-[10px] text-muted-foreground">
                 {formatTime(i)}
               </span>
+            </div>
+          ))}
+
+          {/* Markers */}
+          {project.markers.map((marker) => (
+            <div
+              key={marker.id}
+              className="absolute top-0 bottom-0 w-0.5 cursor-pointer group"
+              style={{
+                left: `${marker.time * timeline.zoom}px`,
+                backgroundColor: marker.color || 'rgb(var(--primary))',
+              }}
+              title={marker.name}
+            >
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-background group-hover:scale-125 transition-transform"
+                style={{ backgroundColor: marker.color || 'rgb(var(--primary))' }}
+              />
+              <div className="absolute top-full left-1 text-[9px] font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity bg-background/90 px-1 rounded"
+                style={{ color: marker.color || 'rgb(var(--primary))' }}
+              >
+                {marker.name}
+              </div>
             </div>
           ))}
         </div>

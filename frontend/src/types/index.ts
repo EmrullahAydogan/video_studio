@@ -147,4 +147,6 @@ export interface TimelineState {
   playbackSpeed: number; // 0.25, 0.5, 1, 1.5, 2
   loop: boolean;
   volume: number; // 0-1
+  snappingEnabled: boolean; // whether timeline snapping is enabled
+  snapThreshold: number; // pixel distance for snapping (default 10px)
 }

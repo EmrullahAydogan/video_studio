@@ -83,6 +83,8 @@ interface ProjectStore {
   setPlaybackSpeed: (speed: number) => void;
   setLoop: (loop: boolean) => void;
   setVolume: (volume: number) => void;
+  setSnappingEnabled: (enabled: boolean) => void;
+  setSnapThreshold: (threshold: number) => void;
 
   // History actions
   undo: () => void;
@@ -108,6 +110,8 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
     playbackSpeed: 1,
     loop: false,
     volume: 1,
+    snappingEnabled: true,
+    snapThreshold: 10, // 10 pixels
   },
 
   createProject: (name: string) => {
@@ -517,6 +521,18 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
   setVolume: (volume) => {
     set((state) => ({
       timeline: { ...state.timeline, volume },
+    }));
+  },
+
+  setSnappingEnabled: (enabled) => {
+    set((state) => ({
+      timeline: { ...state.timeline, snappingEnabled: enabled },
+    }));
+  },
+
+  setSnapThreshold: (threshold) => {
+    set((state) => ({
+      timeline: { ...state.timeline, snapThreshold: threshold },
     }));
   },
 
