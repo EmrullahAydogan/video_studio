@@ -24,6 +24,8 @@ import {
   FlipHorizontal,
   FlipVertical,
   Crop,
+  Film,
+  ZoomIn,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -1146,6 +1148,367 @@ export function ScenePropertiesPanel() {
                     <X className="w-4 h-4 mr-2" />
                     Reset Transform
                   </Button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Ken Burns Effect - Only for image scenes */}
+          {selectedScene.type === 'image' && (
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-2 block flex items-center gap-2">
+                <Film className="w-3 h-3" />
+                KEN BURNS EFFECT
+              </label>
+
+              <div className="space-y-3">
+                {/* Enable Toggle */}
+                <div className="flex items-center justify-between p-3 border rounded-lg">
+                  <div>
+                    <div className="text-sm font-medium">Pan & Zoom Animation</div>
+                    <div className="text-xs text-muted-foreground">
+                      Animated camera movement over image
+                    </div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedScene.kenBurnsEffect?.enabled || false}
+                      onChange={(e) =>
+                        updateScene(selectedScene.id, {
+                          kenBurnsEffect: e.target.checked
+                            ? {
+                                enabled: true,
+                                startPosition: { x: 0, y: 0 },
+                                endPosition: { x: 20, y: 20 },
+                                startScale: 1.2,
+                                endScale: 1,
+                                easing: 'ease-in-out',
+                              }
+                            : undefined,
+                        })
+                      }
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                  </label>
+                </div>
+
+                {selectedScene.kenBurnsEffect?.enabled && (
+                  <>
+                    {/* Start Position */}
+                    <div>
+                      <div className="text-xs mb-2 font-medium">Start Position</div>
+                      <div className="space-y-2">
+                        <div>
+                          <div className="flex justify-between text-xs mb-1">
+                            <span>X Offset</span>
+                            <span className="text-muted-foreground">
+                              {selectedScene.kenBurnsEffect.startPosition.x}%
+                            </span>
+                          </div>
+                          <input
+                            type="range"
+                            min="-50"
+                            max="50"
+                            value={selectedScene.kenBurnsEffect.startPosition.x}
+                            onChange={(e) =>
+                              updateScene(selectedScene.id, {
+                                kenBurnsEffect: {
+                                  ...selectedScene.kenBurnsEffect!,
+                                  startPosition: {
+                                    x: parseInt(e.target.value),
+                                    y: selectedScene.kenBurnsEffect!.startPosition.y,
+                                  },
+                                },
+                              })
+                            }
+                            className="w-full"
+                          />
+                        </div>
+                        <div>
+                          <div className="flex justify-between text-xs mb-1">
+                            <span>Y Offset</span>
+                            <span className="text-muted-foreground">
+                              {selectedScene.kenBurnsEffect.startPosition.y}%
+                            </span>
+                          </div>
+                          <input
+                            type="range"
+                            min="-50"
+                            max="50"
+                            value={selectedScene.kenBurnsEffect.startPosition.y}
+                            onChange={(e) =>
+                              updateScene(selectedScene.id, {
+                                kenBurnsEffect: {
+                                  ...selectedScene.kenBurnsEffect!,
+                                  startPosition: {
+                                    x: selectedScene.kenBurnsEffect!.startPosition.x,
+                                    y: parseInt(e.target.value),
+                                  },
+                                },
+                              })
+                            }
+                            className="w-full"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* End Position */}
+                    <div>
+                      <div className="text-xs mb-2 font-medium">End Position</div>
+                      <div className="space-y-2">
+                        <div>
+                          <div className="flex justify-between text-xs mb-1">
+                            <span>X Offset</span>
+                            <span className="text-muted-foreground">
+                              {selectedScene.kenBurnsEffect.endPosition.x}%
+                            </span>
+                          </div>
+                          <input
+                            type="range"
+                            min="-50"
+                            max="50"
+                            value={selectedScene.kenBurnsEffect.endPosition.x}
+                            onChange={(e) =>
+                              updateScene(selectedScene.id, {
+                                kenBurnsEffect: {
+                                  ...selectedScene.kenBurnsEffect!,
+                                  endPosition: {
+                                    x: parseInt(e.target.value),
+                                    y: selectedScene.kenBurnsEffect!.endPosition.y,
+                                  },
+                                },
+                              })
+                            }
+                            className="w-full"
+                          />
+                        </div>
+                        <div>
+                          <div className="flex justify-between text-xs mb-1">
+                            <span>Y Offset</span>
+                            <span className="text-muted-foreground">
+                              {selectedScene.kenBurnsEffect.endPosition.y}%
+                            </span>
+                          </div>
+                          <input
+                            type="range"
+                            min="-50"
+                            max="50"
+                            value={selectedScene.kenBurnsEffect.endPosition.y}
+                            onChange={(e) =>
+                              updateScene(selectedScene.id, {
+                                kenBurnsEffect: {
+                                  ...selectedScene.kenBurnsEffect!,
+                                  endPosition: {
+                                    x: selectedScene.kenBurnsEffect!.endPosition.x,
+                                    y: parseInt(e.target.value),
+                                  },
+                                },
+                              })
+                            }
+                            className="w-full"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Start Scale */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>Start Zoom</span>
+                        <span className="text-muted-foreground">
+                          {(selectedScene.kenBurnsEffect.startScale * 100).toFixed(0)}%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="100"
+                        max="200"
+                        step="5"
+                        value={selectedScene.kenBurnsEffect.startScale * 100}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            kenBurnsEffect: {
+                              ...selectedScene.kenBurnsEffect!,
+                              startScale: parseInt(e.target.value) / 100,
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* End Scale */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>End Zoom</span>
+                        <span className="text-muted-foreground">
+                          {(selectedScene.kenBurnsEffect.endScale * 100).toFixed(0)}%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="100"
+                        max="200"
+                        step="5"
+                        value={selectedScene.kenBurnsEffect.endScale * 100}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            kenBurnsEffect: {
+                              ...selectedScene.kenBurnsEffect!,
+                              endScale: parseInt(e.target.value) / 100,
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Easing */}
+                    <div>
+                      <div className="text-xs mb-1">Animation Easing</div>
+                      <select
+                        value={selectedScene.kenBurnsEffect.easing || 'ease-in-out'}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            kenBurnsEffect: {
+                              ...selectedScene.kenBurnsEffect!,
+                              easing: e.target.value as any,
+                            },
+                          })
+                        }
+                        className="w-full px-3 py-2 text-sm border rounded-md bg-background"
+                      >
+                        <option value="linear">Linear</option>
+                        <option value="ease-in">Ease In</option>
+                        <option value="ease-out">Ease Out</option>
+                        <option value="ease-in-out">Ease In-Out</option>
+                      </select>
+                    </div>
+
+                    {/* Quick Presets */}
+                    <div>
+                      <div className="text-xs mb-2">Quick Presets</div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-auto py-2 px-3 flex flex-col items-start"
+                          onClick={() =>
+                            updateScene(selectedScene.id, {
+                              kenBurnsEffect: {
+                                enabled: true,
+                                startPosition: { x: 0, y: 0 },
+                                endPosition: { x: 20, y: 20 },
+                                startScale: 1.2,
+                                endScale: 1,
+                                easing: 'ease-in-out',
+                              },
+                            })
+                          }
+                        >
+                          <span className="text-xs font-medium">Zoom Out</span>
+                          <span className="text-[10px] text-muted-foreground">
+                            Start close, end wide
+                          </span>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-auto py-2 px-3 flex flex-col items-start"
+                          onClick={() =>
+                            updateScene(selectedScene.id, {
+                              kenBurnsEffect: {
+                                enabled: true,
+                                startPosition: { x: 0, y: 0 },
+                                endPosition: { x: -20, y: -20 },
+                                startScale: 1,
+                                endScale: 1.4,
+                                easing: 'ease-in-out',
+                              },
+                            })
+                          }
+                        >
+                          <span className="text-xs font-medium">Zoom In</span>
+                          <span className="text-[10px] text-muted-foreground">
+                            Start wide, end close
+                          </span>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-auto py-2 px-3 flex flex-col items-start"
+                          onClick={() =>
+                            updateScene(selectedScene.id, {
+                              kenBurnsEffect: {
+                                enabled: true,
+                                startPosition: { x: -20, y: 0 },
+                                endPosition: { x: 20, y: 0 },
+                                startScale: 1.1,
+                                endScale: 1.1,
+                                easing: 'linear',
+                              },
+                            })
+                          }
+                        >
+                          <span className="text-xs font-medium">Pan Right</span>
+                          <span className="text-[10px] text-muted-foreground">
+                            Left to right pan
+                          </span>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-auto py-2 px-3 flex flex-col items-start"
+                          onClick={() =>
+                            updateScene(selectedScene.id, {
+                              kenBurnsEffect: {
+                                enabled: true,
+                                startPosition: { x: 0, y: -20 },
+                                endPosition: { x: 0, y: 20 },
+                                startScale: 1.1,
+                                endScale: 1.1,
+                                easing: 'linear',
+                              },
+                            })
+                          }
+                        >
+                          <span className="text-xs font-medium">Pan Down</span>
+                          <span className="text-[10px] text-muted-foreground">
+                            Top to bottom pan
+                          </span>
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Info Message */}
+                    <div className="text-xs bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                      <div className="font-medium text-blue-900 dark:text-blue-100 mb-1">
+                        💡 Ken Burns Effect
+                      </div>
+                      <div className="text-blue-700 dark:text-blue-300">
+                        Creates a documentary-style pan and zoom animation over your still image,
+                        adding dynamic movement to static photos.
+                      </div>
+                    </div>
+
+                    {/* Reset Button */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      onClick={() =>
+                        updateScene(selectedScene.id, {
+                          kenBurnsEffect: undefined,
+                        })
+                      }
+                    >
+                      <X className="w-4 h-4 mr-2" />
+                      Disable Ken Burns Effect
+                    </Button>
+                  </>
                 )}
               </div>
             </div>

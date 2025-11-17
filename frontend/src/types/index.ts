@@ -71,6 +71,16 @@ export interface Scene {
       left: number;
     };
   };
+
+  // Ken Burns Effect (for images)
+  kenBurnsEffect?: {
+    enabled: boolean;
+    startPosition: { x: number; y: number }; // percentage (0-100)
+    endPosition: { x: number; y: number }; // percentage (0-100)
+    startScale: number; // 1.0 = 100%, 1.5 = 150%, etc.
+    endScale: number;
+    easing?: 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out';
+  };
 }
 
 export interface Filter {
