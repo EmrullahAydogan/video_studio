@@ -42,6 +42,9 @@ interface ProjectStore {
   history: Project[];
   historyIndex: number;
 
+  // Clipboard
+  clipboard: Scene | null;
+
   // Timeline state
   timeline: TimelineState;
 
@@ -58,6 +61,8 @@ interface ProjectStore {
   reorderScenes: (sceneIds: string[]) => void;
   duplicateScene: (id: string) => void;
   splitScene: (id: string, splitTime: number) => void;
+  copyScene: (id: string) => void;
+  pasteScene: () => void;
 
   // Audio actions
   addAudioTrack: (track: Omit<AudioTrack, 'id'>) => void;
@@ -94,6 +99,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
   hasUnsavedChanges: false,
   history: [],
   historyIndex: -1,
+  clipboard: null,
   timeline: {
     zoom: 50, // 50 pixels per second
     currentTime: 0,
@@ -294,6 +300,42 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
 
     // Auto-save
     projectStorage.saveProject(updatedProject);
+  },
+
+  copyScene: (id) => {
+    const project = get().project;
+    if (!project) return;
+
+    const sceneToCopy = project.scenes.find((s) => s.id === id);
+    if (!sceneToCopy) return;
+
+    // Deep clone the scene
+    set({ clipboard: JSON.parse(JSON.stringify(sceneToCopy)) });
+  },
+
+  pasteScene: () => {
+    const { project, clipboard } = get();
+    if (!project || !clipboard) return;
+
+    const totalDuration = project.scenes.reduce(
+      (max, scene) => Math.max(max, scene.startTime + scene.duration),
+      0
+    );
+
+    const newScene: Scene = {
+      ...clipboard,
+      id: crypto.randomUUID(),
+      name: `${clipboard.name} (Pasted)`,
+      startTime: totalDuration,
+    };
+
+    const updatedProject = {
+      ...project,
+      scenes: [...project.scenes, newScene],
+      updatedAt: new Date(),
+    };
+
+    saveToHistory(set, get, updatedProject);
   },
 
   addAudioTrack: (trackData) => {

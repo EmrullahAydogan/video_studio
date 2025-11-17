@@ -28,6 +28,8 @@ export function EditorLayout() {
     duplicateScene,
     undo,
     redo,
+    copyScene,
+    pasteScene,
   } = useProjectStore();
   const [showShortcutsHelp, setShowShortcutsHelp] = useState(false);
 
@@ -191,6 +193,26 @@ export function EditorLayout() {
           e.preventDefault();
           duplicateScene(timeline.selectedSceneId);
         }
+      },
+    },
+    {
+      key: 'c',
+      ctrl: true,
+      description: 'Copy scene',
+      handler: (e) => {
+        if (timeline.selectedSceneId) {
+          e.preventDefault();
+          copyScene(timeline.selectedSceneId);
+        }
+      },
+    },
+    {
+      key: 'v',
+      ctrl: true,
+      description: 'Paste scene',
+      handler: (e) => {
+        e.preventDefault();
+        pasteScene();
       },
     },
     {
