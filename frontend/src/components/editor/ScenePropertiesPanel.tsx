@@ -26,6 +26,7 @@ import {
   Crop,
   Film,
   ZoomIn,
+  Pipette,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -1507,6 +1508,248 @@ export function ScenePropertiesPanel() {
                     >
                       <X className="w-4 h-4 mr-2" />
                       Disable Ken Burns Effect
+                    </Button>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Chroma Key - Only for video and image scenes */}
+          {(selectedScene.type === 'video' || selectedScene.type === 'image') && (
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-2 block flex items-center gap-2">
+                <Pipette className="w-3 h-3" />
+                CHROMA KEY (GREEN SCREEN)
+              </label>
+
+              <div className="space-y-3">
+                {/* Enable Toggle */}
+                <div className="flex items-center justify-between p-3 border rounded-lg">
+                  <div>
+                    <div className="text-sm font-medium">Remove Color Background</div>
+                    <div className="text-xs text-muted-foreground">
+                      Remove green screen or any solid color
+                    </div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedScene.chromaKey?.enabled || false}
+                      onChange={(e) =>
+                        updateScene(selectedScene.id, {
+                          chromaKey: e.target.checked
+                            ? {
+                                enabled: true,
+                                targetColor: '#00FF00',
+                                tolerance: 30,
+                                feathering: 10,
+                                spill: 20,
+                              }
+                            : undefined,
+                        })
+                      }
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                  </label>
+                </div>
+
+                {selectedScene.chromaKey?.enabled && (
+                  <>
+                    {/* Target Color */}
+                    <div>
+                      <div className="text-xs mb-2 font-medium">Target Color</div>
+                      <div className="flex gap-2 items-center">
+                        <input
+                          type="color"
+                          value={selectedScene.chromaKey.targetColor}
+                          onChange={(e) =>
+                            updateScene(selectedScene.id, {
+                              chromaKey: {
+                                ...selectedScene.chromaKey!,
+                                targetColor: e.target.value,
+                              },
+                            })
+                          }
+                          className="w-12 h-8 border rounded cursor-pointer"
+                        />
+                        <input
+                          type="text"
+                          value={selectedScene.chromaKey.targetColor}
+                          onChange={(e) =>
+                            updateScene(selectedScene.id, {
+                              chromaKey: {
+                                ...selectedScene.chromaKey!,
+                                targetColor: e.target.value,
+                              },
+                            })
+                          }
+                          placeholder="#00FF00"
+                          className="flex-1 px-3 py-2 text-sm border rounded-md bg-background"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Color Presets */}
+                    <div>
+                      <div className="text-xs mb-2">Quick Color Presets</div>
+                      <div className="grid grid-cols-3 gap-2">
+                        <button
+                          onClick={() =>
+                            updateScene(selectedScene.id, {
+                              chromaKey: {
+                                ...selectedScene.chromaKey!,
+                                targetColor: '#00FF00',
+                              },
+                            })
+                          }
+                          className="px-3 py-2 border rounded-md text-xs font-medium hover:bg-accent flex items-center justify-center gap-2"
+                        >
+                          <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#00FF00' }} />
+                          Green
+                        </button>
+                        <button
+                          onClick={() =>
+                            updateScene(selectedScene.id, {
+                              chromaKey: {
+                                ...selectedScene.chromaKey!,
+                                targetColor: '#0000FF',
+                              },
+                            })
+                          }
+                          className="px-3 py-2 border rounded-md text-xs font-medium hover:bg-accent flex items-center justify-center gap-2"
+                        >
+                          <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#0000FF' }} />
+                          Blue
+                        </button>
+                        <button
+                          onClick={() =>
+                            updateScene(selectedScene.id, {
+                              chromaKey: {
+                                ...selectedScene.chromaKey!,
+                                targetColor: '#FF00FF',
+                              },
+                            })
+                          }
+                          className="px-3 py-2 border rounded-md text-xs font-medium hover:bg-accent flex items-center justify-center gap-2"
+                        >
+                          <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#FF00FF' }} />
+                          Magenta
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Tolerance */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>Tolerance</span>
+                        <span className="text-muted-foreground">
+                          {selectedScene.chromaKey.tolerance}%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={selectedScene.chromaKey.tolerance}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            chromaKey: {
+                              ...selectedScene.chromaKey!,
+                              tolerance: parseInt(e.target.value),
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                      <div className="text-xs text-muted-foreground mt-1">
+                        How much color variation to remove
+                      </div>
+                    </div>
+
+                    {/* Feathering */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>Edge Feathering</span>
+                        <span className="text-muted-foreground">
+                          {selectedScene.chromaKey.feathering}%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={selectedScene.chromaKey.feathering}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            chromaKey: {
+                              ...selectedScene.chromaKey!,
+                              feathering: parseInt(e.target.value),
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                      <div className="text-xs text-muted-foreground mt-1">
+                        Edge smoothing for better blending
+                      </div>
+                    </div>
+
+                    {/* Spill Suppression */}
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>Spill Suppression</span>
+                        <span className="text-muted-foreground">
+                          {selectedScene.chromaKey.spill}%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={selectedScene.chromaKey.spill}
+                        onChange={(e) =>
+                          updateScene(selectedScene.id, {
+                            chromaKey: {
+                              ...selectedScene.chromaKey!,
+                              spill: parseInt(e.target.value),
+                            },
+                          })
+                        }
+                        className="w-full"
+                      />
+                      <div className="text-xs text-muted-foreground mt-1">
+                        Reduce color spill on subject edges
+                      </div>
+                    </div>
+
+                    {/* Info Message */}
+                    <div className="text-xs bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-3">
+                      <div className="font-medium text-green-900 dark:text-green-100 mb-1">
+                        🎬 Chroma Key Tips
+                      </div>
+                      <div className="text-green-700 dark:text-green-300 space-y-1">
+                        <div>• Use even, bright lighting on green screen</div>
+                        <div>• Adjust tolerance for color range</div>
+                        <div>• Increase feathering for softer edges</div>
+                        <div>• Use spill suppression for green color bleed</div>
+                      </div>
+                    </div>
+
+                    {/* Reset Button */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      onClick={() =>
+                        updateScene(selectedScene.id, {
+                          chromaKey: undefined,
+                        })
+                      }
+                    >
+                      <X className="w-4 h-4 mr-2" />
+                      Disable Chroma Key
                     </Button>
                   </>
                 )}

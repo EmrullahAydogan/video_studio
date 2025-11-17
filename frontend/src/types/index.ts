@@ -81,6 +81,15 @@ export interface Scene {
     endScale: number;
     easing?: 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out';
   };
+
+  // Chroma Key (Green Screen Removal)
+  chromaKey?: {
+    enabled: boolean;
+    targetColor: string; // hex color (e.g., '#00FF00' for green)
+    tolerance: number; // 0-100, how much color variation to remove
+    feathering: number; // 0-100, edge smoothing
+    spill: number; // 0-100, spill suppression
+  };
 }
 
 export interface Filter {
