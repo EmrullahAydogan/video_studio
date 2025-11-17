@@ -2,10 +2,45 @@ import { create } from 'zustand';
 import { Scene, AudioTrack, Marker, Project, TimelineState } from '@/types';
 import { projectStorage } from '@/lib/projectStorage';
 
+// Helper to save state to history
+const saveToHistory = (
+  set: any,
+  get: any,
+  updatedProject: Project
+) => {
+  const { history, historyIndex } = get();
+  const MAX_HISTORY = 50; // Keep last 50 states
+
+  // Remove any future history if we're not at the end
+  const newHistory = history.slice(0, historyIndex + 1);
+
+  // Add new state
+  newHistory.push(JSON.parse(JSON.stringify(updatedProject)));
+
+  // Limit history size
+  if (newHistory.length > MAX_HISTORY) {
+    newHistory.shift();
+  }
+
+  set({
+    project: updatedProject,
+    history: newHistory,
+    historyIndex: newHistory.length - 1,
+    hasUnsavedChanges: true,
+  });
+
+  // Auto-save
+  projectStorage.saveProject(updatedProject);
+};
+
 interface ProjectStore {
   // Project data
   project: Project | null;
   hasUnsavedChanges: boolean;
+
+  // History for undo/redo
+  history: Project[];
+  historyIndex: number;
 
   // Timeline state
   timeline: TimelineState;
@@ -44,6 +79,12 @@ interface ProjectStore {
   setLoop: (loop: boolean) => void;
   setVolume: (volume: number) => void;
 
+  // History actions
+  undo: () => void;
+  redo: () => void;
+  canUndo: () => boolean;
+  canRedo: () => boolean;
+
   // Utility
   getTotalDuration: () => number;
 }
@@ -51,6 +92,8 @@ interface ProjectStore {
 export const useProjectStore = create<ProjectStore>((set, get) => ({
   project: null,
   hasUnsavedChanges: false,
+  history: [],
+  historyIndex: -1,
   timeline: {
     zoom: 50, // 50 pixels per second
     currentTime: 0,
@@ -141,13 +184,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
       updatedAt: new Date(),
     };
 
-    set({
-      project: updatedProject,
-      hasUnsavedChanges: true,
-    });
-
-    // Auto-save
-    projectStorage.saveProject(updatedProject);
+    saveToHistory(set, get, updatedProject);
   },
 
   deleteScene: (id) => {
@@ -160,13 +197,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
       updatedAt: new Date(),
     };
 
-    set({
-      project: updatedProject,
-      hasUnsavedChanges: true,
-    });
-
-    // Auto-save
-    projectStorage.saveProject(updatedProject);
+    saveToHistory(set, get, updatedProject);
   },
 
   reorderScenes: (sceneIds) => {
@@ -445,6 +476,40 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
     set((state) => ({
       timeline: { ...state.timeline, volume },
     }));
+  },
+
+  undo: () => {
+    const { history, historyIndex } = get();
+    if (historyIndex > 0) {
+      const previousProject = history[historyIndex - 1];
+      set({
+        project: previousProject,
+        historyIndex: historyIndex - 1,
+        hasUnsavedChanges: true,
+      });
+    }
+  },
+
+  redo: () => {
+    const { history, historyIndex } = get();
+    if (historyIndex < history.length - 1) {
+      const nextProject = history[historyIndex + 1];
+      set({
+        project: nextProject,
+        historyIndex: historyIndex + 1,
+        hasUnsavedChanges: true,
+      });
+    }
+  },
+
+  canUndo: () => {
+    const { historyIndex } = get();
+    return historyIndex > 0;
+  },
+
+  canRedo: () => {
+    const { history, historyIndex } = get();
+    return historyIndex < history.length - 1;
   },
 
   getTotalDuration: () => {

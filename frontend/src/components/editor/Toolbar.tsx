@@ -28,7 +28,7 @@ import { MarkersDialog } from './MarkersDialog';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
 export function Toolbar() {
-  const { project, saveProject, hasUnsavedChanges } = useProjectStore();
+  const { project, saveProject, hasUnsavedChanges, undo, redo, canUndo, canRedo } = useProjectStore();
   const [showExportDialog, setShowExportDialog] = useState(false);
   const [showProjectManager, setShowProjectManager] = useState(false);
   const [showTextOverlay, setShowTextOverlay] = useState(false);
@@ -84,10 +84,22 @@ export function Toolbar() {
 
       {/* Center - Actions */}
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" disabled>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={undo}
+          disabled={!canUndo()}
+          title="Undo (Ctrl+Z)"
+        >
           <Undo className="w-4 h-4" />
         </Button>
-        <Button variant="ghost" size="sm" disabled>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={redo}
+          disabled={!canRedo()}
+          title="Redo (Ctrl+Y)"
+        >
           <Redo className="w-4 h-4" />
         </Button>
 

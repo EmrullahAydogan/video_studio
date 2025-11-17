@@ -26,6 +26,8 @@ export function EditorLayout() {
     saveProject,
     deleteScene,
     duplicateScene,
+    undo,
+    redo,
   } = useProjectStore();
   const [showShortcutsHelp, setShowShortcutsHelp] = useState(false);
 
@@ -189,6 +191,24 @@ export function EditorLayout() {
           e.preventDefault();
           duplicateScene(timeline.selectedSceneId);
         }
+      },
+    },
+    {
+      key: 'z',
+      ctrl: true,
+      description: 'Undo',
+      handler: (e) => {
+        e.preventDefault();
+        undo();
+      },
+    },
+    {
+      key: 'y',
+      ctrl: true,
+      description: 'Redo',
+      handler: (e) => {
+        e.preventDefault();
+        redo();
       },
     },
     // Project
