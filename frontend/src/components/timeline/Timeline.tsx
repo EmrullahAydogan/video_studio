@@ -20,7 +20,7 @@ import { useProjectStore } from '@/stores/useProjectStore';
 import { SceneCard } from './SceneCard';
 import { AudioTrackCard } from './AudioTrackCard';
 import { formatTime } from '@/lib/utils';
-import { Plus, ZoomIn, ZoomOut, Upload } from 'lucide-react';
+import { Plus, ZoomIn, ZoomOut, Upload, Maximize2, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function Timeline() {
@@ -86,6 +86,24 @@ export function Timeline() {
   const handleZoom = (delta: number) => {
     const newZoom = Math.max(10, Math.min(200, timeline.zoom + delta));
     setZoom(newZoom);
+  };
+
+  const handleFitToView = () => {
+    if (!timelineRef.current || !project) return;
+    const totalDuration = project.scenes.reduce(
+      (max, scene) => Math.max(max, scene.startTime + scene.duration),
+      10
+    );
+    const containerWidth = timelineRef.current.offsetWidth;
+    const optimalZoom = Math.max(10, Math.min(200, (containerWidth - 100) / totalDuration));
+    setZoom(optimalZoom);
+  };
+
+  const handlePan = (direction: 'left' | 'right') => {
+    if (!timelineRef.current) return;
+    const scrollAmount = 200;
+    const newScroll = timelineRef.current.scrollLeft + (direction === 'right' ? scrollAmount : -scrollAmount);
+    timelineRef.current.scrollTo({ left: newScroll, behavior: 'smooth' });
   };
 
   const handleDragEnter = (e: React.DragEvent) => {
@@ -203,22 +221,70 @@ export function Timeline() {
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Pan Controls */}
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => handlePan('left')}
+            title="Pan left (or use Arrow Left)"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => handlePan('right')}
+            title="Pan right (or use Arrow Right)"
+          >
+            <ArrowRight className="w-4 h-4" />
+          </Button>
+
+          <div className="h-6 w-px bg-border mx-1" />
+
+          {/* Zoom Controls */}
           <Button
             size="sm"
             variant="outline"
             onClick={() => handleZoom(-10)}
+            title="Zoom out"
           >
             <ZoomOut className="w-4 h-4" />
           </Button>
-          <span className="text-xs text-muted-foreground w-12 text-center">
-            {Math.round((timeline.zoom / 50) * 100)}%
-          </span>
+
+          {/* Zoom Slider */}
+          <div className="flex items-center gap-2">
+            <input
+              type="range"
+              min="10"
+              max="200"
+              step="10"
+              value={timeline.zoom}
+              onChange={(e) => setZoom(parseInt(e.target.value))}
+              className="w-24 h-1 bg-secondary rounded-lg cursor-pointer"
+              title={`Zoom: ${Math.round((timeline.zoom / 50) * 100)}%`}
+            />
+            <span className="text-xs text-muted-foreground w-12 text-center">
+              {Math.round((timeline.zoom / 50) * 100)}%
+            </span>
+          </div>
+
           <Button
             size="sm"
             variant="outline"
             onClick={() => handleZoom(10)}
+            title="Zoom in"
           >
             <ZoomIn className="w-4 h-4" />
+          </Button>
+
+          {/* Fit to View */}
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleFitToView}
+            title="Fit timeline to view"
+          >
+            <Maximize2 className="w-4 h-4" />
           </Button>
         </div>
       </div>
