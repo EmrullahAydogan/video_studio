@@ -1,428 +1,252 @@
 # 🎬 AI Video Studio
 
-**AI-Powered Professional Video Editing Platform**
-
-A modern AI-based video creation and editing studio built with cutting-edge web technologies. Create professional videos with drag-and-drop interface, real-time preview, and artificial intelligence integrations.
-
-![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
-![Next.js](https://img.shields.io/badge/Next.js-14-black)
+Professional AI-powered video editing studio built with React, Next.js, and FFmpeg.
 
 ## ✨ Features
 
-### 🎥 Video Editing
-- ✂️ **Cut, Copy, Paste** - Easy video manipulation
-- 🎬 **Scene Management** - Organize and arrange scenes
-- 🎨 **Transition Effects** - Professional transitions (fade, slide, zoom, dissolve)
-- 🖱️ **Drag & Drop** - Intuitive timeline interface
-- ⏱️ **Timeline View** - Detailed timeline visualization
-- 🎵 **Audio Management** - Add music and sound effects with volume and fade controls
+### ✅ Currently Implemented (UI Complete)
+- 🎥 **Timeline Editor** - Professional multi-track timeline with drag & drop
+- ✂️ **Scene Management** - Trim, split, duplicate, reorder scenes
+- 🎨 **Visual Effects** - Filters, transitions, transforms, Ken Burns effect
+- 🎭 **Chroma Key** - Green screen removal with advanced controls
+- 🤖 **AI Integration Ready** - Background removal, video generation (requires API keys)
+- 📊 **Project Templates** - 8 pre-built templates for different use cases
+- ⚡ **Keyboard Shortcuts** - Professional editing workflow
+- 💾 **Auto-save** - Never lose your work
+- 🔄 **Undo/Redo** - Full history system (50 states)
+- 📍 **Timeline Markers** - Visual markers with snapping
+- 🎯 **Snapping** - Smart snap to grid, markers, and scene boundaries
 
-### 🤖 AI Features
-- 🎨 **Text-to-Image** - Generate images from text (DALL-E, Stable Diffusion)
-- 📹 **Text-to-Video** - Generate videos from text (Runway ML)
-- ✨ **Auto Transitions** - AI-powered transition suggestions
-- 🔍 **Scene Analysis** - Scene analysis with GPT-4 Vision
-- 📝 **Auto Subtitles** - Generate subtitles from speech
-- 🎨 **Color Enhancement** - AI-based color correction
+### 🎨 Effects & Tools
+- **Filters**: Brightness, Contrast, Saturation, Blur
+- **Transitions**: Fade, Slide, Zoom, Dissolve, Wipe
+- **Transform**: Rotate, Flip, Crop
+- **Ken Burns Effect**: Pan & zoom animations for images
+- **Chroma Key**: Professional green screen removal
+- **Speed Control**: 0.25x to 2x playback speed
+- **Text Animations**: 6 different animation types
+- **Picture-in-Picture**: Multi-layer compositing
 
-### 📤 Export & Sharing
-- 🎞️ **Multiple Formats** - MP4, WebM, GIF
-- 📊 **Flexible Resolution** - 720p, 1080p, 4K
-- ☁️ **Cloud Storage** - AWS S3 integration
-- 🔗 **Social Media** - Direct sharing
+## 🚀 One-Command Setup (All Platforms)
 
-## 🏗️ Architecture
-
-```
-┌─────────────────────────────────────────────────────┐
-│                  Next.js Frontend                    │
-│  ┌────────┐  ┌─────────┐  ┌─────────┐  ┌────────┐  │
-│  │Timeline│  │ Canvas  │  │   AI    │  │ Assets │  │
-│  │ Editor │  │ Preview │  │  Panel  │  │ Panel  │  │
-│  └────────┘  └─────────┘  └─────────┘  └────────┘  │
-└─────────────────────────────────────────────────────┘
-                         ↕
-┌─────────────────────────────────────────────────────┐
-│              Express.js Backend API                  │
-│  ┌────────┐  ┌─────────┐  ┌─────────┐  ┌────────┐  │
-│  │ Video  │  │   AI    │  │ Export  │  │ Queue  │  │
-│  │Process │  │Services │  │ Render  │  │ (Bull) │  │
-│  └────────┘  └─────────┘  └─────────┘  └────────┘  │
-└─────────────────────────────────────────────────────┘
-                         ↕
-┌─────────────────────────────────────────────────────┐
-│         External Services & Storage                  │
-│  ┌────────┐  ┌─────────┐  ┌─────────┐  ┌────────┐  │
-│  │ OpenAI │  │Stability│  │ Runway  │  │  AWS   │  │
-│  │   API  │  │   AI    │  │   ML    │  │   S3   │  │
-│  └────────┘  └─────────┘  └─────────┘  └────────┘  │
-└─────────────────────────────────────────────────────┘
-```
-
-## 🛠️ Teknoloji Stack
-
-### Frontend
-- **Framework**: Next.js 14 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **State Management**: Zustand
-- **Drag & Drop**: @dnd-kit
-- **Canvas Rendering**: Fabric.js
-- **Video Processing**: FFmpeg.wasm
-
-### Backend
-- **Runtime**: Node.js
-- **Framework**: Express.js
-- **Video Processing**: FFmpeg
-- **Job Queue**: Bull + Redis
-- **AI Services**:
-  - OpenAI (GPT-4, DALL-E 3)
-  - Stability AI
-  - Runway ML
-
-### DevOps
-- **Database**: PostgreSQL
-- **Cache**: Redis
-- **Storage**: AWS S3
-- **Deployment**: Vercel (Frontend), AWS EC2 (Backend)
-
-## 🚀 Quick Start
-
-### Requirements
-
-- Node.js 18+
-- npm or yarn
-- FFmpeg (for video processing)
-- Redis (optional, for export queue)
+### Prerequisites
+- **Docker Desktop** (Windows/Mac/Linux)
+  - Windows: [Download Docker Desktop](https://www.docker.com/products/docker-desktop)
+  - Mac: [Download Docker Desktop](https://www.docker.com/products/docker-desktop)
+  - Linux: [Install Docker Engine](https://docs.docker.com/engine/install/)
 
 ### Installation
 
-1. **Clone the repository**
-```bash
-git clone <your-repo-url>
-cd video_studio
+#### Windows
+```cmd
+setup.bat
 ```
 
-2. **Install dependencies**
+#### macOS / Linux
 ```bash
-# Root package.json
-npm install
+./setup.sh
+```
 
-# Frontend
+That's it! 🎉
+
+The application will be available at:
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:4000
+
+## 📋 Manual Setup (Without Docker)
+
+### Frontend
+```bash
 cd frontend
 npm install
+npm run dev
+```
 
-# Backend
-cd ../backend
+### Backend
+```bash
+cd backend
 npm install
+npm start
 ```
 
-3. **Set up environment variables**
+**Note**: Manual setup requires Node.js 18+ and FFmpeg installed on your system.
 
-Create backend `.env` file:
-```bash
-cd backend
-cp .env.example .env
-# Edit .env and add your API keys
-```
+## 🎯 Usage
 
-4. **Start development servers**
+1. **Create a Project**: Click "Templates" and choose a template, or start blank
+2. **Add Media**: Drag & drop videos, images, or audio files to the timeline
+3. **Edit**: Use the timeline to trim, reorder, and adjust scenes
+4. **Apply Effects**: Select a scene and adjust properties in the right panel
+5. **Export**: Click "Export" to render your final video
 
-```bash
-# From root directory (both frontend and backend)
-npm run dev
+## ⌨️ Keyboard Shortcuts
 
-# OR separately:
+### Playback
+- `Space` - Play/Pause
+- `Home` - Jump to start
+- `End` - Jump to end
+- `←/→` - Navigate frames
+- `Shift + ←/→` - Skip 5 seconds
 
-# Frontend (port 3000)
-cd frontend
-npm run dev
+### Editing
+- `Ctrl + Z` - Undo
+- `Ctrl + Y` - Redo
+- `Ctrl + C` - Copy scene
+- `Ctrl + V` - Paste scene
+- `Ctrl + D` - Duplicate scene
+- `Delete` - Delete scene
 
-# Backend (port 3001)
-cd backend
-npm run dev
-```
+### Timeline
+- `S` - Toggle snapping
+- `Ctrl + +` - Zoom in
+- `Ctrl + -` - Zoom out
+- `Ctrl + 0` - Reset zoom
 
-5. **Open in your browser**
-```
-http://localhost:3000
-```
+### General
+- `Ctrl + S` - Save project
+- `?` - Show all shortcuts
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **React** - UI library
+- **Next.js** - React framework
+- **TypeScript** - Type safety
+- **Tailwind CSS** - Styling
+- **Zustand** - State management
+- **DnD Kit** - Drag & drop
+
+### Backend
+- **Node.js** - Runtime
+- **Express** - Web framework
+- **FFmpeg** - Video processing
+- **Multer** - File uploads
+
+### DevOps
+- **Docker** - Containerization
+- **Docker Compose** - Multi-container orchestration
 
 ## 📁 Project Structure
 
 ```
-video-studio/
-├── frontend/                 # Next.js Frontend
+video_studio/
+├── frontend/           # React/Next.js frontend
 │   ├── src/
-│   │   ├── app/             # Next.js App Router
-│   │   │   ├── layout.tsx   # Root layout
-│   │   │   ├── page.tsx     # Ana sayfa
-│   │   │   └── globals.css  # Global stiller
-│   │   ├── components/      # React Components
-│   │   │   ├── editor/      # Video editor components
-│   │   │   │   ├── EditorLayout.tsx
-│   │   │   │   ├── VideoPreview.tsx
-│   │   │   │   ├── Toolbar.tsx
-│   │   │   │   └── AssetPanel.tsx
-│   │   │   ├── timeline/    # Timeline components
-│   │   │   │   ├── Timeline.tsx
-│   │   │   │   └── SceneCard.tsx
-│   │   │   ├── ai/          # AI panel components
-│   │   │   │   └── AIPanel.tsx
-│   │   │   └── ui/          # Reusable UI components
-│   │   │       └── button.tsx
-│   │   ├── lib/             # Utilities & helpers
-│   │   │   └── utils.ts
-│   │   ├── stores/          # Zustand stores
-│   │   │   └── useProjectStore.ts
-│   │   └── types/           # TypeScript types
-│   │       └── index.ts
-│   ├── public/              # Static assets
-│   ├── package.json
-│   ├── tsconfig.json
-│   ├── tailwind.config.ts
-│   └── next.config.js
-│
-├── backend/                  # Node.js Backend
+│   │   ├── components/ # UI components
+│   │   ├── stores/     # Zustand state management
+│   │   ├── types/      # TypeScript types
+│   │   └── lib/        # Utilities
+│   └── Dockerfile
+├── backend/            # Node.js + Express backend
 │   ├── src/
-│   │   ├── index.ts         # Express app
-│   │   ├── routes/          # API routes
-│   │   │   ├── video.ts     # Video endpoints
-│   │   │   ├── ai.ts        # AI endpoints
-│   │   │   └── export.ts    # Export endpoints
-│   │   └── services/        # Business logic
-│   │       ├── video.ts     # Video processing
-│   │       ├── ai.ts        # AI integrations
-│   │       └── export.ts    # Export/render
-│   ├── uploads/             # Uploaded files
-│   ├── exports/             # Rendered videos
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── .env.example
-│
-├── PROJECT_PLAN.md          # Detailed project plan
-├── package.json             # Workspace package.json
-└── README.md               # This file
+│   │   └── index.js    # API server
+│   └── Dockerfile
+├── docker-compose.yml  # Multi-container config
+├── setup.sh            # Unix setup script
+└── setup.bat           # Windows setup script
 ```
 
-## 🎯 Usage
+## 🔧 Configuration
 
-### 1. Create Project
+### Environment Variables
 
-A new project is automatically created when the application opens.
-
-### 2. Add Scenes
-
-**Manual Import:**
-- Upload files from the "Assets" panel on the left
-- Drag and drop video or image files
-
-**AI Generation:**
-- Use "AI Studio" on the right panel
-- Enter a prompt (e.g., "A sunset over the ocean")
-- Click "Generate Image" or "Generate Video"
-- Generated scene is automatically added to timeline
-
-### 3. Edit Timeline
-
-- **Drag & Drop**: Reorder scenes
-- **Trim**: Click on scene, adjust duration
-- **Copy**: Click copy button on scene
-- **Delete**: Click trash button on scene
-
-### 4. Preview
-
-- Real-time preview in center canvas area
-- Control with Play/Pause buttons
-- Navigate timeline with progress bar
-- Zoom in/out for detailed view
-
-### 5. Export
-
-- Click "Export" button in toolbar
-- Select format (MP4, WebM, GIF)
-- Set quality options
-- Start rendering
-
-## 🔌 API Endpoints
-
-### Video Processing
-```
-POST   /api/video/upload       # Upload video
-POST   /api/video/process      # Process video
-GET    /api/video/info/:id     # Get video info
+**Backend** (`backend/.env`):
+```env
+NODE_ENV=development
+PORT=4000
+FRONTEND_URL=http://localhost:3000
 ```
 
-### AI Services
-```
-POST   /api/ai/generate/image  # Generate image
-POST   /api/ai/generate/video  # Generate video
-POST   /api/ai/suggest-transitions  # Suggest transitions
-POST   /api/ai/analyze-scene   # Analyze scene
+**Frontend** (automatic):
+```env
+NEXT_PUBLIC_API_URL=http://localhost:4000
 ```
 
-### Export
-```
-POST   /api/export/render      # Render video
-GET    /api/export/status/:id  # Get render status
-```
+### AI Integration (Optional)
 
-## 🎨 UI Components
-
-### EditorLayout
-Main editor layout. Organizes all components.
-
-### Timeline
-- Visualizes scenes
-- Reorder with drag and drop
-- Zoom controls
-- Playhead indicator
-
-### VideoPreview
-- Canvas-based preview
-- Real-time rendering
-- Playback controls
-- Timeline synchronization
-
-### AIPanel
-- AI image/video generation
-- Prompt input
-- Suggested prompts
-- AI features list
-
-### AssetPanel
-- Media file management
-- File upload
-- Asset organization
-
-## 🔧 Development
-
-### Adding New Features
-
-1. **Frontend Component**
-```typescript
-// src/components/new-feature/NewComponent.tsx
-export function NewComponent() {
-  // Component logic
-}
+To enable AI features, add API keys to `backend/.env`:
+```env
+OPENAI_API_KEY=your_key_here
+STABILITY_API_KEY=your_key_here
+RUNWAY_API_KEY=your_key_here
 ```
 
-2. **Backend Endpoint**
-```typescript
-// backend/src/routes/new.ts
-router.post('/new-endpoint', async (req, res) => {
-  // Endpoint logic
-});
-```
-
-3. **Type Definition**
-```typescript
-// frontend/src/types/index.ts
-export interface NewType {
-  // Type definition
-}
-```
-
-### Testing
+## 🐳 Docker Commands
 
 ```bash
-# Frontend test
-cd frontend
-npm run test
+# Start services
+docker-compose up
 
-# Backend test
-cd backend
-npm run test
+# Start in background
+docker-compose up -d
+
+# Stop services
+docker-compose down
+
+# View logs
+docker-compose logs -f
+
+# Rebuild containers
+docker-compose up --build
+
+# Remove all data
+docker-compose down -v
 ```
 
-### Build
+## 🎓 Development
 
+### Run in Development Mode
 ```bash
-# Frontend build
-cd frontend
-npm run build
+# Frontend (with hot reload)
+cd frontend && npm run dev
 
-# Backend build
-cd backend
-npm run build
+# Backend (with nodemon)
+cd backend && npm run dev
 ```
 
-## 📝 TODO & Future Features
+### Build for Production
+```bash
+# Frontend
+cd frontend && npm run build
 
-### Phase 1 - Core Features ✅
-- [x] Project structure
-- [x] Timeline component
-- [x] Drag & drop
-- [x] Video preview
-- [x] AI panel
+# Backend
+cd backend && npm start
+```
 
-### Phase 2 - Advanced Features ✅
-- [x] Real AI integrations (OpenAI DALL-E for images)
-- [x] Improved video upload with duration detection
-- [x] Video export/render dialog with quality settings
-- [x] Undo/Redo system (useUndoRedo hook)
-- [x] Keyboard shortcuts system
-- [x] Automatic thumbnail generation for videos
-- [x] API client for backend communication
-- [ ] FFmpeg video processing (backend integration needed)
+## 🐛 Troubleshooting
 
-### Phase 3 - Enhancement 🚧
-- [x] Project save/load (localStorage)
-- [x] Project management UI (create, load, delete, duplicate)
-- [x] Auto-save functionality
-- [x] Project export/import (JSON files)
-- [x] Multiple project support
-- [ ] User accounts (authentication)
-- [ ] Database integration (PostgreSQL + Prisma)
-- [ ] Cloud storage (AWS S3)
-- [ ] Real-time collaboration
-- [ ] Template library
-- [ ] Audio editing tools
+### Port Already in Use
+Change ports in `docker-compose.yml`:
+```yaml
+ports:
+  - "3001:3000"  # Frontend
+  - "4001:4000"  # Backend
+```
 
-### Phase 4 - Professional Features ✅ (Mostly Complete)
-- [x] Advanced effects and filters panel
-- [x] Color grading (brightness, contrast, saturation, blur)
-- [x] Transition effects (fade, slide, zoom, dissolve, wipe)
-- [x] Text overlay with full customization
-- [x] Scene properties panel with real-time editing
-- [x] Tabbed sidebar (AI Studio + Properties)
-- [x] Audio volume and fade controls
-- [x] Audio track management with visual waveforms
-- [ ] Motion graphics
-- [ ] 3D transitions
-- [ ] AI video enhancement
-- [ ] Batch processing
+### Docker Not Starting
+1. Ensure Docker Desktop is running
+2. Check system resources (RAM/CPU)
+3. Try: `docker-compose down && docker-compose up --build`
+
+### FFmpeg Errors
+FFmpeg is included in the Docker container. If running manually, install:
+- **Windows**: [Download FFmpeg](https://ffmpeg.org/download.html)
+- **Mac**: `brew install ffmpeg`
+- **Linux**: `sudo apt install ffmpeg`
+
+## 📝 License
+
+MIT
 
 ## 🤝 Contributing
 
-We welcome contributions! Please follow these steps:
+Contributions welcome! Feel free to:
+- Report bugs
+- Suggest features
+- Submit pull requests
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+## 🎉 Acknowledgments
 
-## 📄 License
-
-This project is licensed under the MIT License.
-
-## 🙏 Acknowledgments
-
-- [Next.js](https://nextjs.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [FFmpeg](https://ffmpeg.org/)
-- [OpenAI](https://openai.com/)
-- [DND Kit](https://dndkit.com/)
-
-## 📧 Contact
-
-For questions, please open an issue or submit a pull request.
-
----
-
-**The Future of AI-Powered Video Editing** 🚀
-
-Made with ❤️ using Next.js, TypeScript, and AI
+- FFmpeg for video processing
+- React & Next.js teams
+- All open-source contributors

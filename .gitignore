@@ -9,11 +9,10 @@ node_modules/
 # Next.js
 frontend/.next/
 frontend/out/
-frontend/build
 
 # Production
-build/
-dist/
+/build
+/dist
 
 # Misc
 .DS_Store
@@ -27,8 +26,6 @@ yarn-error.log*
 # Local env files
 .env
 .env*.local
-.env.development
-.env.production
 
 # Vercel
 .vercel
@@ -37,20 +34,21 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Video files
+# Uploads and exports
+backend/uploads/*
+backend/exports/*
 uploads/
-temp/
-*.mp4
-*.mov
-*.avi
-*.webm
+exports/
 
-# IDEs
-.vscode/
+# Docker
+.dockerignore
+
+# IDE
 .idea/
+.vscode/
 *.swp
 *.swo
+*~
 
-# Database
-*.db
-*.sqlite
+# OS
+Thumbs.db
