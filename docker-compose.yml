@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # Frontend - Next.js React Application
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: video_studio_frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:4000
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # Backend - Node.js + Express + FFmpeg
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: video_studio_backend
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - ./uploads:/app/uploads
+      - ./exports:/app/exports
+    environment:
+      - NODE_ENV=development
+      - PORT=4000
+      - FRONTEND_URL=http://localhost:3000
+    restart: unless-stopped
+
+volumes:
+  node_modules_frontend:
+  node_modules_backend:
